@@ -29,7 +29,7 @@ define('DB_USER', '{{ wordpress_mysql_user }}');
 define('DB_PASSWORD', '{{ wordpress_mysql_password | mandatory }}');
 
 /** MySQL hostname */
-define( 'DB_HOST', 'localhost:{{ mariadb_socket }}' );
+define( 'DB_HOST', 'localhost:{{ mariadb_socket | mandatory }}' );
 
 /** Database Charset to use in creating database tables. */
 define('DB_CHARSET', 'utf8');

@@ -6,6 +6,8 @@
     - php-mysql
     - python-mysqldb
     - php-ldap
+    - php-imagick
+    - php-gd
   when: ansible_pkg_mgr == "apt"
 
 - stat:
@@ -16,13 +18,24 @@
     path: /var/www/
     state: directory
     mode: 0755
-  when: wordpress_dir_exists.stat.isdir is not defined and not wordpress_dir_exists.stat.isdir
+  when: not wordpress_dir_exists.stat.exists
   # this checks if the wordpress dir exists
 - name:
   unarchive:
     src: files/wordpress_latest.zip
     dest: /var/www/
-  when: wordpress_dir_exists.stat.isdir is not defined and not wordpress_dir_exists.stat.isdir
+    owner: www-data
+    group: www-data
+  when: not wordpress_dir_exists.stat.exists
+
+- name: Copy theme
+  unarchive:
+    src: "{{ inventory_hostname }}/cookie.zip"
+    dest: /var/www/wordpress/wp-content/themes/
+    directory_mode: ye
+    mode: 0755
+    owner: www-data
+    group: www-data
 
 - name: remove anonymous user account
   mysql_user:
