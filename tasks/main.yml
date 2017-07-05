@@ -30,7 +30,7 @@
 
 - name: Copy theme
   unarchive:
-    src: "{{ inventory_hostname }}/cookie.zip"
+    src: "{{ inventory_hostname }}/{{ wordpress_template }}.zip"
     dest: /var/www/wordpress/wp-content/themes/
     directory_mode: ye
     mode: 0755
