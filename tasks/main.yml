@@ -32,7 +32,7 @@
   unarchive:
     src: "{{ inventory_hostname }}/cookie.zip"
     dest: /var/www/wordpress/wp-content/themes/
-    directory_mode: ye
+    directory_mode: yes
     mode: 0755
     owner: www-data
     group: www-data
@@ -69,6 +69,13 @@
   template:
     src: templates/wordpress.sql.j2
     dest: /tmp/wordpress.sql
+  when: wordpress_import_db_file is not defined
+
+- name: Write wordpress.sql
+  copy:
+    src: "files/{{ wordpress_import_db_file}}"
+    dest: /tmp/wordpress.sql
+  when: wordpress_import_db_file is defined
 
 - name: Import file.sql similar to mysql -u <username> -p <password> < hostname.sql
   mysql_db:
