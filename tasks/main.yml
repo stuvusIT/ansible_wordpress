@@ -70,7 +70,7 @@
   copy:
     src: "{{ inventory_hostname }}/wp-content"
     dest: /var/www/wordpress/
-    directory_mode: yes
+    directory_mode: "u=rwX,g=rX,o-rwX"
     mode: "u=rwX,g=rX,o-rwX"
     owner: www-data
     group: www-data
