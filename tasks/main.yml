@@ -30,7 +30,7 @@
 
 - name: Copy theme
   unarchive:
-    src: "{{ inventory_hostname }}/{{ wordpress_template }}zip"
+    src: "{{ inventory_hostname }}/{{ wordpress_template }}.zip"
     dest: /var/www/wordpress/wp-content/themes/
     directory_mode: yes
     mode: 0755
