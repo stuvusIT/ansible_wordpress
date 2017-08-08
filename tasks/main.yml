@@ -84,7 +84,7 @@
 
 - name: Write wordpress.sql
   copy:
-    src: "files/wordpress.sql"
+    src: "{{ inventory_hostname }}/wordpress.sql"
     dest: /tmp/wordpress.sql
   when: wordpress_import_db_file
 
