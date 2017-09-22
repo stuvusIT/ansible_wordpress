@@ -1,7 +1,13 @@
 ---
-- name:
+
+- name: Download latest wordpress version
+  get_url:
+    url: https://wordpress.org/latest.zip
+    dest: /tmp/wordpress_latest.zip
+
+- name: Unarchive wordpress zip to /var/www
   unarchive:
-    src: files/wordpress_latest.zip
+    src: /tmp/wordpress_latest.zip
     dest: /var/www/
     owner: www-data
     group: www-data
