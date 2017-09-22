@@ -1,0 +1,74 @@
+---
+- name:
+  unarchive:
+    src: files/wordpress_latest.zip
+    dest: /var/www/
+    owner: www-data
+    group: www-data
+
+- name: Copy theme
+  unarchive:
+    src: "{{ inventory_hostname }}/{{ wordpress_template }}.zip"
+    dest: /var/www/wordpress/wp-content/themes/
+    directory_mode: yes
+    mode: 0755
+    owner: www-data
+    group: www-data
+  when: wordpress_import_template
+
+- name: remove anonymous user account
+  mysql_user:
+    name: ''
+    host: localhost
+    state: absent
+
+- name: Create a new database with name '{{ wordpress_mysql_database_name }}'
+  mysql_db:
+    name: "{{ wordpress_mysql_database_name }}"
+    state: present
+
+- name: Create mariadb user
+  mysql_user:
+    name: "{{ wordpress_mysql_user }}"
+    password: "{{ wordpress_mysql_password }}"
+    priv: '{{ wordpress_mysql_database_name }}.*:ALL,GRANT'
+    state: present
+
+- name: Fetch random salts for WordPress config
+  local_action: command curl https://api.wordpress.org/secret-key/1.1/salt/
+  register: "wp_salt"
+  become: no
+
+- name: Write wp-config.php
+  template:
+    src: templates/wp-config.php.j2
+    dest: /var/www/wordpress/wp-config.php  
+
+- name: Copy wp-content if it exists
+  copy:
+    src: "{{ inventory_hostname }}/wp-content"
+    dest: /var/www/wordpress/
+    directory_mode: "u=rwX,g=rX,o-rwX"
+    mode: "u=rwX,g=rX,o-rwX"
+    owner: www-data
+    group: www-data
+  when: wordpress_import_wp_content
+  
+- name: Write wordpress.sql
+  template:
+    src: templates/wordpress.sql.j2
+    dest: /tmp/wordpress.sql
+  when: not wordpress_import_db_file
+
+- name: Write wordpress.sql
+  copy:
+    src: "{{ inventory_hostname }}/wordpress.sql"
+    dest: /tmp/wordpress.sql
+  when: wordpress_import_db_file
+
+- name: Import file.sql similar to mysql -u <username> -p <password> < hostname.sql
+  mysql_db:
+    state: import
+    name: "{{ wordpress_mysql_database_name }}"
+    target: /tmp/wordpress.sql
+
