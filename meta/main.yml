@@ -1,6 +1,6 @@
 galaxy_info:
-  author: Insert author(s) here
-  description: Insert description here
+  author: Fritz Otlinghaus
+  description: Wordpress ansible role
   company: stuvus (https://stuvus.uni-stuttgart.de)
 
   license: CC-BY-SA
@@ -17,6 +17,11 @@ galaxy_info:
 
   galaxy_tags:
     - stuvus
-    - Insert ansible galaxy tags here
+    - wordpress
+    - blog
+    - website
 
-dependencies: []
+dependencies: 
+  - stuvusIT.nginx
+  - stuvusIT.php-fpm
+  - stuvusIT.mariadb
