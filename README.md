@@ -17,7 +17,7 @@ This role requires the [php-fpm role](https://github.com/stuvusIT/php-fpm), the 
 | `wordpress_mysql_password`      | :heavy_check_mark:       |         | The password for the mysql database                             |
 | `wordpress_default_user` | :heavy_multiplication_x:       | `admin`        | This is the user that is created on setup |
 | `wordpress_default_password`      | :heavy_check_mark:|                | The password that is used for the default user |
-| `wordpress_default_email`      | :heavy_check_mark:|                | The email adress for the default user |
+| `wordpress_default_email`      | :heavy_check_mark:|                | The email address for the default user |
 
 
 ### Design
