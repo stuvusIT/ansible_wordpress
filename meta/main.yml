@@ -1,0 +1,27 @@
+galaxy_info:
+  author: Fritz Otlinghaus
+  description: Wordpress ansible role
+  company: stuvus (https://stuvus.uni-stuttgart.de)
+
+  license: CC-BY-SA
+
+  min_ansible_version: 2.2
+
+  platforms:
+    - name: Ubuntu
+      versions:
+        - yakkety
+    - name: Debian
+      versions:
+        - jessie
+
+  galaxy_tags:
+    - stuvus
+    - wordpress
+    - blog
+    - website
+
+dependencies: 
+  - stuvusIT.nginx
+  - stuvusIT.php-fpm
+  - stuvusIT.mariadb
