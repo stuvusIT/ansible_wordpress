@@ -24,16 +24,16 @@ This role requires the [php-fpm role](https://github.com/stuvusIT/php-fpm), the 
 
 | Name                 | Required                 | Default        | Description                                                    |
 |----------------------|:------------------------:|----------------|----------------------------------------------------------------|
-| `wordpress_template`      | :heavy_multiplication_x:       |    `twentyseventeen`     | The name of the wordpress template beeing in use                           |
-| `wordpress_import_template` | :heavy_multiplication_x:       | `false`        | If this is true ansible will try to extract a zip file from  files/{{inventory_hostname}}/{{ wordpress_template }}.zip and install it in the wordpress instace |
+| `wordpress_template`      | :heavy_multiplication_x:       |    `twentyseventeen`     | The name of the wordpress template being in use                           |
+| `wordpress_import_template` | :heavy_multiplication_x:       | `false`        | If this is true ansible will try to extract a zip file from   `files/{{inventory_hostname}}/{{ wordpress_template }}.zip ` and install it in the wordpress instace |
 | `wordpress_stylesheet`      | :heavy_multiplication_x:|        `twentyseventeen`         | What stylesheet should be used for the wordpress instance |
 
 ### Import wordpress instance
 
 | Name                 | Required                 | Default        | Description                                                    |
 |----------------------|:------------------------:|----------------|----------------------------------------------------------------|
-| `wordpress_import_wp_content`      | :heavy_multiplication_x:       |    `false`     | If this is true ansible will try to copy the wp-content directory over to the remote host from  files/{{inventory_hostname}}/wp-content/                 |
-| `wordpress_import_db_file` | :heavy_multiplication_x:       | `false`        | If this is true ansible will try to import an sql file from  files/{{inventory_hostname}}/wordpress.sql|
+| `wordpress_import_wp_content`      | :heavy_multiplication_x:       |    `false`     | If this is true ansible will try to copy the wp-content directory over to the remote host from   `files/{{inventory_hostname}}/wp-content/`                 |
+| `wordpress_import_db_file` | :heavy_multiplication_x:       | `false`        | If this is true ansible will try to import an sql file from `files/{{inventory_hostname}}/wordpress.sql`|
 
 ### Mail
 
@@ -46,7 +46,7 @@ This role requires the [php-fpm role](https://github.com/stuvusIT/php-fpm), the 
 
 ## Dependencies
 
-The php-fpm role needs to be up and running and a nginx server should be running and serving files from /var/www/wordpress also it needs a maria db instance with the socket running under /var/run/mysqld/mysqld.sock
+The php-fpm role needs to be up and running and a nginx server should be running and serving files from  `/var/www/wordpress` also it needs a maria db instance with the socket running under  `/var/run/mysqld/mysqld.sock`
 
 
 ## Example Playbook
