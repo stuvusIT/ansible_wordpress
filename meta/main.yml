@@ -21,7 +21,4 @@ galaxy_info:
     - blog
     - website
 
-dependencies: 
-  - stuvusIT.nginx
-  - stuvusIT.php-fpm
-  - stuvusIT.mariadb
+dependencies: []
