@@ -20,5 +20,5 @@
     mode: 0755
   when: not wordpress_dir_exists.stat.exists
 
-- include: install.yml
+- import_tasks: install.yml
   when: not wordpress_dir_exists.stat.exists
