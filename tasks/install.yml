@@ -11,6 +11,7 @@
     dest: /var/www/
     owner: www-data
     group: www-data
+    remote_src: yes
 
 - name: Copy theme
   unarchive:

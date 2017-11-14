@@ -8,6 +8,9 @@
     - php-ldap
     - php-imagick
     - php-gd
+    - php-mbstring
+    - php-mcrypt
+    - php-curl
   when: ansible_pkg_mgr == "apt"
 
 - stat:
