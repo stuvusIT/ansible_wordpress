@@ -12,37 +12,46 @@ This role requires the [php-fpm role](https://github.com/stuvusIT/php-fpm), the 
 
 ### General
 
-| Name                 | Required                 | Default        | Description                                            |
-|----------------------|:------------------------:|----------------|----------------------------------------------------------------|
-| `wordpress_mysql_password`      | :heavy_check_mark:       |         | The password for the mysql database                             |
-| `wordpress_default_user` | :heavy_multiplication_x:       | `admin`        | This is the user that is created on setup |
-| `wordpress_default_password`      | :heavy_check_mark:|                | The password that is used for the default user |
-| `wordpress_default_email`      | :heavy_check_mark:|                | The email address for the default user |
+| Name                         | Required/Default   | Description                                                                   |
+|------------------------------|:------------------:|-------------------------------------------------------------------------------|
+| `wordpress_mysql_password`   | :heavy_check_mark: | The password for the mysql database                                           |
+| `wordpress_default_user`     | `admin`            | This is the user that is created on setup                                     |
+| `wordpress_default_password` | :heavy_check_mark: | The password that is used for the default user                                |
+| `wordpress_default_email`    | :heavy_check_mark: | The email address for the default user                                        |
+| `wordpress_plugin_merge`     | `true`             | The email address for the default user                                        |
+| `wordpress_plugins`          | `[]`               | List of plugins to install and options to set. For more information see below |
 
+### Plugins
+
+| Name      | Required/Default   | Description                                                             |
+|-----------|--------------------|-------------------------------------------------------------------------|
+| `name`    | :heavy_check_mark: | The name(slug) of the plugin to be installed.                           |
+| `merge`   | `true`             | Setting if the options should be merged or overwritten                  |
+| `options` | :heavy_check_mark: | Dict with options. The key is the same key as in the wordpress database |
 
 ### Design
 
-| Name                 | Required                 | Default        | Description                                                    |
-|----------------------|:------------------------:|----------------|----------------------------------------------------------------|
-| `wordpress_template`      | :heavy_multiplication_x:       |    `twentyseventeen`     | The name of the wordpress template being in use                           |
-| `wordpress_import_template` | :heavy_multiplication_x:       | `false`        | If this is true ansible will try to extract a zip file from   `files/{{inventory_hostname}}/{{ wordpress_template }}.zip ` and install it in the wordpress instace |
-| `wordpress_stylesheet`      | :heavy_multiplication_x:|        `twentyseventeen`         | What stylesheet should be used for the wordpress instance |
+| Name                        | Required/Default  | Description                                                                                                                                                        |
+|-----------------------------|-------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `wordpress_template`        | `twentyseventeen` | The name of the wordpress template being in use                                                                                                                    |
+| `wordpress_import_template` | `false`           | If this is true ansible will try to extract a zip file from   `files/{{inventory_hostname}}/{{ wordpress_template }}.zip ` and install it in the wordpress instace |
+| `wordpress_stylesheet`      | `twentyseventeen` | What stylesheet should be used for the wordpress instance                                                                                                          |
 
 ### Import wordpress instance
 
-| Name                 | Required                 | Default        | Description                                                    |
-|----------------------|:------------------------:|----------------|----------------------------------------------------------------|
-| `wordpress_import_wp_content`      | :heavy_multiplication_x:       |    `false`     | If this is true ansible will try to copy the wp-content directory over to the remote host from   `files/{{inventory_hostname}}/wp-content/`                 |
-| `wordpress_import_db_file` | :heavy_multiplication_x:       | `false`        | If this is true ansible will try to import an sql file from `files/{{inventory_hostname}}/wordpress.sql`|
+| Name                          | Required/Default | Description                                                                                                                                 |
+|-------------------------------|------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
+| `wordpress_import_wp_content` | `false`          | If this is true ansible will try to copy the wp-content directory over to the remote host from   `files/{{inventory_hostname}}/wp-content/` |
+| `wordpress_import_db_file`    | `false`          | If this is true ansible will try to import an sql file from `files/{{inventory_hostname}}/wordpress.sql`                                    |
 
 ### Mail
 
-| Name                 | Required                 | Default        | Description                                                    |
-|----------------------|:------------------------:|----------------|----------------------------------------------------------------|
-| `wordpress_mailserver_url`      | :heavy_multiplication_x:       |    `mail.example.com`     | url of the mailserver                           |
-| `wordpress_mailserver_login` | :heavy_multiplication_x:       | `login@example.com`        | Login name for the mailserer |
-| `wordpress_mailserver_pass`      | :heavy_multiplication_x:|        `password`         | Password for the mailserver|                                  |
-| `wordpress_mailserver_port`      | :heavy_multiplication_x:|        `110`         | Mailserver port | 
+| Name                         | Required/Default    | Description                  |
+|------------------------------|:--------------------|------------------------------|
+| `wordpress_mailserver_url`   | `mail.example.com`  | url of the mailserver        |
+| `wordpress_mailserver_login` | `login@example.com` | Login name for the mailserer |
+| `wordpress_mailserver_pass`  | `password`          | Password for the mailserver  |
+| `wordpress_mailserver_port`  | `110`               | Mailserver port              |
 
 ## Dependencies
 
