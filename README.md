@@ -18,16 +18,16 @@ This role requires the [php-fpm role](https://github.com/stuvusIT/php-fpm), the 
 | `wordpress_default_user`     | `admin`            | This is the user that is created on setup                                     |
 | `wordpress_default_password` | :heavy_check_mark: | The password that is used for the default user                                |
 | `wordpress_default_email`    | :heavy_check_mark: | The email address for the default user                                        |
-| `wordpress_plugin_merge`     | `true`             | The email address for the default user                                        |
+| `wordpress_plugin_merge`     | `true`             | Default behaviour when using plugin options                                   |
 | `wordpress_plugins`          | `[]`               | List of plugins to install and options to set. For more information see below |
 
 ### Plugins
 
-| Name      | Required/Default   | Description                                                             |
-|-----------|--------------------|-------------------------------------------------------------------------|
-| `name`    | :heavy_check_mark: | The name(slug) of the plugin to be installed.                           |
-| `merge`   | `true`             | Setting if the options should be merged or overwritten                  |
-| `options` | :heavy_check_mark: | Dict with options. The key is the same key as in the wordpress database |
+| Name      | Required/Default               | Description                                                             |
+|-----------|--------------------------------|-------------------------------------------------------------------------|
+| `name`    | :heavy_check_mark:             | The name(slug) of the plugin to be installed.                           |
+| `merge`   | `{{ wordpress_plugin_merge }}` | Setting if the options should be merged or overwritten                  |
+| `options` | :heavy_check_mark:             | Dict with options. The key is the same key as in the wordpress database |
 
 ### Design
 
