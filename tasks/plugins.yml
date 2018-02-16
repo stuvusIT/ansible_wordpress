@@ -1,0 +1,17 @@
+
+- name: Install plugins
+  become_user: www-data
+  shell: "wp plugin install {{ item.name }} --path=/var/www/wordpress --activate"
+  register: output
+  changed_when: "'Installing' in output.stdout"
+  with_items: "{{ wordpress_plugins }}"
+
+- name: Configure plugins
+  include_tasks: configure_plugin.yml
+  with_items: "{{ wordpress_plugins }}"
+  loop_control:
+    loop_var: plugin
+
+- name: Update plugins
+  become_user: www-data
+  shell: wp plugin update --all --path=/var/www/wordpress

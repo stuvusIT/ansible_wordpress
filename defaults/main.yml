@@ -104,3 +104,5 @@ wordpress_cron: 'a:2:{i:1492259221;a:4:{s:16:\"wp_version_check\";a:1:{s:32:\"40
 wordpress_can_compress_scripts: 0
 wordpress_import_wp_content: false
 wordpress_import_db_file: false
+wordpress_plugin_merge_default: true
+wordpress_plugins: []
