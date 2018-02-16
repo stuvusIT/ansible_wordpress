@@ -5,17 +5,9 @@
   changed_when: False
   register: result
 
-- name: Read output form json to yaml
-  set_fact:
-    option_plugin: "{{ result.stdout | from_json }}"
-
-- name: Merge settings
-  set_fact:
-    option_merged: "{{ option_plugin | combine( item.value ) }}"
-
 - name: Write merged settings to file
   copy:
-    content: "{{ option_merged | to_json }}"
+    content: "{{  result.stdout | from_json | combine( item.value ) | to_json }}"
     dest: "{{ tmp_file.path }}"
   changed_when: False
 
