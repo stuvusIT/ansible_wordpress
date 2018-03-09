@@ -41,10 +41,11 @@ wordpress_admins:
 ```
 If no `password` is set its assumed to be either recovered over Mail or supplied by plugins like [authorizer](https://github.com/uhm-coe/authorizer)
 
-| Name            | Required/Default   | Description                           |
-|-----------------|--------------------|---------------------------------------|
-| `email`         | :heavy_check_mark: | The email address of the admin.       |
-| `password`      | ` `                | The plain text password of the admin. |
+| Name       | Required/Default   | Description                           |
+|------------|--------------------|---------------------------------------|
+| `email`    | :heavy_check_mark: | The email address of the admin.       |
+| `name`     | :heavy_check_mark: | The display name of the admin.        |
+| `password` | ` `                | The plain text password of the admin. |
 
 ### Design
 

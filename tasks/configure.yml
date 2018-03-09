@@ -1,12 +1,18 @@
 ---
 - name: Create admins
   become_user: www-data
-  shell: "wp user create {{ item.key }} {{ item.value.email }} --user_pass={{ item.value.password }} --role=administrator --path=/var/www/wordpress"
+  shell: "wp user create {{ item.key }} {{ item.value.email }} --display_name='{{ item.value.name }}' --user_pass={{ item.value.password }} --role=administrator --path=/var/www/wordpress"
   when: item.value.email is defined and item.value.password is defined
+  register: result
+  changed_when: "'Created user' in result.stdout"
+  failed_when: "result.rc != 0 and not 'username is already registered' in result.stderr"
   with_dict: "{{ wordpress_admins }}"
 
 - name: Create admins
   become_user: www-data
-  shell: "wp user create {{ item.key }} {{ item.value.email }} --role=administrator --path=/var/www/wordpress"
+  shell: "wp user create {{ item.key }} {{ item.value.email }} --display_name='{{ item.value.name }}' --role=administrator --path=/var/www/wordpress"
   when: item.value.email is defined and not item.value.password is defined
+  register: result
+  changed_when: "'Created user' in result.stdout"
+  failed_when: "result.rc != 0 and not 'username is already registered' in result.stderr"
   with_dict: "{{ wordpress_admins }}"
