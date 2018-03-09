@@ -46,6 +46,8 @@
 
 - import_tasks: plugins.yml
 
+- import_tasks: configure.yml
+
 - name: Update wordpress
   become_user: www-data
   shell: wp core update --path=/var/www/wordpress

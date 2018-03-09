@@ -106,3 +106,4 @@ wordpress_import_wp_content: false
 wordpress_import_db_file: false
 wordpress_plugin_merge_default: true
 wordpress_plugins: []
+wordpress_admins: {}

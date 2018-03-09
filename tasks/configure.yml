@@ -1,0 +1,12 @@
+---
+- name: Create admins
+  become_user: www-data
+  shell: "wp user create {{ item.key }} {{ item.value.email }} --user_pass={{ item.value.password }} --role=administrator --path=/var/www/wordpress"
+  when: item.value.email is defined and item.value.password is defined
+  with_dict: "{{ wordpress_admins }}"
+
+- name: Create admins
+  become_user: www-data
+  shell: "wp user create {{ item.key }} {{ item.value.email }} --role=administrator --path=/var/www/wordpress"
+  when: item.value.email is defined and not item.value.password is defined
+  with_dict: "{{ wordpress_admins }}"
