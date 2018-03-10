@@ -20,6 +20,7 @@ This role requires the [php-fpm role](https://github.com/stuvusIT/php-fpm), the 
 | `wordpress_default_email`        | :heavy_check_mark: | The email address for the default user                                        |
 | `wordpress_plugin_merge_default` | `true`             | Setting if the options should be merged or overwritten                        |
 | `wordpress_plugins`              | `[]`               | List of plugins to install and options to set. For more information see below |
+| `wordpress_admins`               | `{}`               | List of admins to be created. For more information see below                  |
 
 ### Plugins
 
@@ -28,6 +29,23 @@ This role requires the [php-fpm role](https://github.com/stuvusIT/php-fpm), the 
 | `name`    | :heavy_check_mark:                     | The name(slug) of the plugin to be installed.                           |
 | `merge`   | `{{ wordpress_plugin_merge_default }}` | Setting if the options should be merged or overwritten                  |
 | `options` | :heavy_check_mark:                     | Dict with options. The key is the same key as in the wordpress database |
+
+### Admins
+
+Dict of admins to be created, using the key as admin name
+Example:
+```yaml
+wordpress_admins:
+  admin:
+    email: admin@example.com
+```
+If no `password` is set its assumed to be either recovered over Mail or supplied by plugins like [authorizer](https://github.com/uhm-coe/authorizer)
+
+| Name       | Required/Default         | Description                           |
+|------------|--------------------------|---------------------------------------|
+| `email`    | :heavy_check_mark:       | The email address of the admin.       |
+| `name`     | :heavy_check_mark:       | The display name of the admin.        |
+| `password` | :heavy_multiplication_x: | The plain text password of the admin. |
 
 ### Design
 
