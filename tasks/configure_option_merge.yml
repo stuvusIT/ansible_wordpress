@@ -1,7 +1,6 @@
 ---
 - name: "Read {{ item.key }}"
-  become_user: www-data
-  shell: "wp option get {{ item.key }} --path=/var/www/wordpress --format=json"
+  shell: "sudo -u www-data wp option get {{ item.key }} --path=/var/www/wordpress --format=json"
   changed_when: False
   register: result
 
@@ -12,8 +11,6 @@
   changed_when: False
 
 - name: "Configure {{ plugin.name }}"
-  become_user: www-data
-  shell: "wp option update {{ item.key }} --path=/var/www/wordpress --format=json < {{ tmp_file.path }}"
+  shell: "sudo -u www-data wp option update {{ item.key }} --path=/var/www/wordpress --format=json < {{ tmp_file.path }}"
   register: output
   changed_when: "'Updated' in output.stdout"
-
