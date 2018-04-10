@@ -1,5 +1,4 @@
 ---
-
 - name: Download latest wordpress version
   get_url:
     url: https://wordpress.org/latest.zip
@@ -78,4 +77,3 @@
     state: import
     name: "{{ wordpress_mysql_database_name }}"
     target: /tmp/wordpress.sql
-
