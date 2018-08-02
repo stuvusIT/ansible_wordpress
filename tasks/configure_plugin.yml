@@ -15,12 +15,12 @@
 
 - name: "Configure {{ plugin.name }} and merge options"
   include_tasks: configure_option_merge.yml
-  when: "{{ plugin.options }} is defined and {{ plugin.merge }} | default(wordpress_plugin_merge_default)"
+  when: "{{ plugin.options }} is defined and {{ plugin.merge | default(wordpress_plugin_merge_default) }}"
   with_dict: "{{ plugin.options }}"
 
 - name: "Configure {{ plugin.name }} and overwrite options"
   include_tasks: configure_option_overwrite.yml
-  when: "{{ plugin.options }} is defined and not {{ plugin.merge }} | default(wordpress_plugin_merge_default)"
+  when: "{{ plugin.options }} is defined and not {{ plugin.merge | default(wordpress_plugin_merge_default) }}"
   with_dict: "{{ plugin.options }}"
 
 - name: Delete tmp file
