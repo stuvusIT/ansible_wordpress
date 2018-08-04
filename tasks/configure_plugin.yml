@@ -13,12 +13,12 @@
     mode: 0600
   changed_when: False
 
-- name: "Configure {{ plugin.name }} and merge options"
+- name: "Configure plugin and merge options"
   include_tasks: configure_option_merge.yml
   when: "{{ plugin.options }} is defined and {{ plugin.merge | default(wordpress_plugin_merge_default) }}"
   with_dict: "{{ plugin.options }}"
 
-- name: "Configure {{ plugin.name }} and overwrite options"
+- name: "Configure plugin and overwrite options"
   include_tasks: configure_option_overwrite.yml
   when: "{{ plugin.options }} is defined and not {{ plugin.merge | default(wordpress_plugin_merge_default) }}"
   with_dict: "{{ plugin.options }}"
