@@ -29,7 +29,7 @@
     dest: /tmp/wordpress.sql
   when:
     - not wordpress_import_db_file
-    - wp_tables.stdout == ""
+    - wp_tables.rc == 1
 
 - name: Write wordpress.sql to /tmp/wordpress.sql
   copy:
@@ -37,7 +37,7 @@
     dest: /tmp/wordpress.sql
   when:
     - wordpress_import_db_file
-    - wp_tables.stdout == ""
+    - wp_tables.rc == 1
 
 - name: Import wordpress from /tmp/wordpress.sql
   mysql_db:
