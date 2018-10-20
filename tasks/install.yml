@@ -23,24 +23,6 @@
     group: www-data
   when: wordpress_import_template
 
-- name: Remove anonymous user account
-  mysql_user:
-    name: ''
-    host: localhost
-    state: absent
-
-- name: Create a new database with name '{{ wordpress_mysql_database_name }}'
-  mysql_db:
-    name: "{{ wordpress_mysql_database_name }}"
-    state: present
-
-- name: Create mariadb user
-  mysql_user:
-    name: "{{ wordpress_mysql_user }}"
-    password: "{{ wordpress_mysql_password }}"
-    priv: '{{ wordpress_mysql_database_name }}.*:ALL,GRANT'
-    state: present
-
 - name: Fetch random salts for WordPress config
   local_action: command curl https://api.wordpress.org/secret-key/1.1/salt/
   register: "wp_salt"
@@ -60,22 +42,3 @@
     owner: www-data
     group: www-data
   when: wordpress_import_wp_content
-  
-- name: Write wordpress.sql
-  template:
-    src: templates/wordpress.sql.j2
-    dest: /tmp/wordpress.sql
-  when: not wordpress_import_db_file
-
-- name: Write wordpress.sql to /tmp/wordpress.sql
-  copy:
-    src: "{{ inventory_hostname }}/wordpress.sql"
-    dest: /tmp/wordpress.sql
-  when: wordpress_import_db_file
-
-- name: Import wordpress from /tmp/wordpress.sql
-  mysql_db:
-    state: import
-    name: "{{ wordpress_mysql_database_name }}"
-    target: /tmp/wordpress.sql
-

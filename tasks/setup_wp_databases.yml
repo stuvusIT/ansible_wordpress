@@ -1,0 +1,42 @@
+---
+- name: Remove anonymous DB user account
+  mysql_user:
+    name: ''
+    host: localhost
+    state: absent
+
+- name: Create DB user
+  mysql_user:
+    name: "{{ wordpress_mysql_user }}"
+    password: "{{ wordpress_mysql_password }}"
+    priv: '{{ wordpress_mysql_database_name }}.*:ALL,GRANT'
+    state: present
+
+- name: Create a new database with name '{{ wordpress_mysql_database_name }}'
+  mysql_db:
+    name: "{{ wordpress_mysql_database_name }}"
+    state: present
+
+- name: Check if DB contains any tables
+  shell: "mysql --user={{ wordpress_mysql_user }} --password={{ wordpress_mysql_password }} -D {{ wordpress_mysql_database_name }} -e \"show tables;\""
+  register: wp_tables
+  failed_when: false
+
+- name: Write wordpress.sql
+  template:
+    src: templates/wordpress.sql.j2
+    dest: /tmp/wordpress.sql
+  when: not wordpress_import_db_file and wp_tables.stdout == ""
+
+- name: Write wordpress.sql to /tmp/wordpress.sql
+  copy:
+    src: "{{ inventory_hostname }}/wordpress.sql"
+    dest: /tmp/wordpress.sql
+  when: wordpress_import_db_file and wp_tables.stdout == ""
+
+- name: Import wordpress from /tmp/wordpress.sql
+  mysql_db:
+    state: import
+    name: "{{ wordpress_mysql_database_name }}"
+    target: /tmp/wordpress.sql
+  when: wp_tables.stdout == ""
