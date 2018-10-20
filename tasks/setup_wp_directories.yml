@@ -51,14 +51,18 @@
 
 - name: Write wp-salt.php
   template:
-    src: templates/wp-salt.php.j2
+    src: wp-salt.php.j2
     dest: /var/www/wordpress/wp-salt.php 
+    owner: www-data
+    group: www-data
   when: not wp_salt.stat.exists
 
 - name: Write wp-config.php
   template:
     src: templates/wp-config.php.j2
     dest: /var/www/wordpress/wp-config.php
+    owner: www-data
+    group: www-data
 
 - name: Copy wp-content if it exists
   copy:
