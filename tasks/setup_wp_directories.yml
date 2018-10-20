@@ -13,16 +13,16 @@
 - name: Download latest wordpress version
   get_url:
     url: https://wordpress.org/latest.zip
-    dest: /tmp/wordpress_latest.zip
-  when: not wordpress_dir.stat.exists
+    dest: "{{ global_cache_dir | mandatory }}/wordpress_latest.zip"
+  become: false
+  delegate_to: localhost
 
 - name: Unarchive wordpress zip to /var/www
   unarchive:
-    src: /tmp/wordpress_latest.zip
+    src: "{{ global_cache_dir | mandatory }}/wordpress_latest.zip"
     dest: /var/www/
     owner: www-data
     group: www-data
-    remote_src: yes
   when: not wordpress_dir.stat.exists
 
 - name: Copy theme
