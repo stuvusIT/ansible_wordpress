@@ -42,6 +42,8 @@
 
 - name: Fetch random salts for WordPress config
   command: curl https://api.wordpress.org/secret-key/1.1/salt/
+  args:
+    warn: false
   register: wp_generated_salts
   become: no
   delegate_to: localhost
