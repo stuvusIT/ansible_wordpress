@@ -1,17 +1,5 @@
 ---
-- name: Install required packages
-  apt:
-    name: "{{ item }}"
-  with_items:
-    - php-mysql
-    - python-mysqldb
-    - php-ldap
-    - php-imagick
-    - php-gd
-    - php-mbstring
-    - php-mcrypt
-    - php-curl
-  when: ansible_pkg_mgr == "apt"
+- import_tasks: install_packages.yml
 
 - stat:
     path: /var/www/wordpress
