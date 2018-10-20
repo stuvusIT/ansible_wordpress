@@ -1,27 +1,10 @@
 ---
 - import_tasks: install_packages.yml
+- import_tasks: install_wp_cli.yml
 
 - stat:
     path: /var/www/wordpress
   register: wordpress_dir_exists
-
-- name: Download wp-cli
-  get_url:
-    url: 'https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar'
-    dest: "{{ global_cache_dir | mandatory }}/"
-  become: false
-  delegate_to: localhost
-
-- name: Install wp-cli
-  copy: 
-    src: "{{ global_cache_dir }}/wp-cli.phar"
-    dest: "/usr/local/bin/wp"
-    mode: 0755
-    owner: root
-    group: root
-
-- name: Update wp-cli
-  shell: sudo wp cli update
 
 - file:
     path: /var/www/

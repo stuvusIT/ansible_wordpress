@@ -1,0 +1,25 @@
+---
+- name: Check if wp-cli exists
+  stat:
+    path: /usr/local/bin/wp
+  register: wp_cli_exec_path
+
+- name: Download wp-cli
+  get_url:
+    url: 'https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar'
+    dest: "{{ global_cache_dir | mandatory }}/"
+  become: false
+  delegate_to: localhost
+  when: not wp_cli_exec_path.stat.exists
+
+- name: Install wp-cli
+  copy: 
+    src: "{{ global_cache_dir }}/wp-cli.phar"
+    dest: "/usr/local/bin/wp"
+    mode: 0755
+    owner: root
+    group: root
+  when: not wp_cli_exec_path.stat.exists
+
+- name: Update wp-cli
+  shell: wp cli update
