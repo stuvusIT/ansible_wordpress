@@ -35,22 +35,28 @@
     group: www-data
   when: wordpress_import_template
 
-- name: Check if wp-config.php already exists
+- name: Check if wp-salt.php already exists
   stat:
-    path: /var/www/wordpress/wp-config.php
-  register: wp_config
+    path: /var/www/wordpress/wp-salt.php
+  register: wp_salt
 
 - name: Fetch random salts for WordPress config
-  local_action: command curl https://api.wordpress.org/secret-key/1.1/salt/
-  register: "wp_salt"
+  command: curl https://api.wordpress.org/secret-key/1.1/salt/
+  register: wp_generated_salts
   become: no
-  when: not wp_config.stat.exists
+  delegate_to: localhost
+  when: not wp_salt.stat.exists
+
+- name: Write wp-salt.php
+  template:
+    src: templates/wp-salt.php.j2
+    dest: /var/www/wordpress/wp-salt.php 
+  when: not wp_salt.stat.exists
 
 - name: Write wp-config.php
   template:
     src: templates/wp-config.php.j2
-    dest: /var/www/wordpress/wp-config.php  
-  when: not wp_config.stat.exists
+    dest: /var/www/wordpress/wp-config.php
 
 - name: Copy wp-content if it exists
   copy:
