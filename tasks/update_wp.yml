@@ -1,0 +1,6 @@
+---
+- name: Update wordpress
+  become_user: www-data
+  shell: wp core update --path=/var/www/wordpress
+  register: result
+  changed_when: "not 'Success: WordPress is up to date' in result.stdout"
