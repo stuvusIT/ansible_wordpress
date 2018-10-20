@@ -1,0 +1,43 @@
+---
+- name: Download latest wordpress version
+  get_url:
+    url: https://wordpress.org/latest.zip
+    dest: /tmp/wordpress_latest.zip
+
+- name: Unarchive wordpress zip to /var/www
+  unarchive:
+    src: /tmp/wordpress_latest.zip
+    dest: /var/www/
+    owner: www-data
+    group: www-data
+    remote_src: yes
+
+- name: Copy theme
+  unarchive:
+    src: "{{ inventory_hostname }}/{{ wordpress_template }}.zip"
+    dest: /var/www/wordpress/wp-content/themes/
+    directory_mode: yes
+    mode: 0755
+    owner: www-data
+    group: www-data
+  when: wordpress_import_template
+
+- name: Fetch random salts for WordPress config
+  local_action: command curl https://api.wordpress.org/secret-key/1.1/salt/
+  register: "wp_salt"
+  become: no
+
+- name: Write wp-config.php
+  template:
+    src: templates/wp-config.php.j2
+    dest: /var/www/wordpress/wp-config.php  
+
+- name: Copy wp-content if it exists
+  copy:
+    src: "{{ inventory_hostname }}/wp-content"
+    dest: /var/www/wordpress/
+    directory_mode: "u=rwX,g=rX,o-rwX"
+    mode: "u=rwX,g=rX,o-rwX"
+    owner: www-data
+    group: www-data
+  when: wordpress_import_wp_content
