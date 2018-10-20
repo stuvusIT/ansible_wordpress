@@ -10,12 +10,10 @@
     name: "{{ wordpress_mysql_user }}"
     password: "{{ wordpress_mysql_password }}"
     priv: '{{ wordpress_mysql_database_name }}.*:ALL,GRANT'
-    state: present
 
 - name: Create a new database with name '{{ wordpress_mysql_database_name }}'
   mysql_db:
     name: "{{ wordpress_mysql_database_name }}"
-    state: present
 
 - name: Check if DB contains any tables
   shell: >
