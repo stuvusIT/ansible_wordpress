@@ -1,6 +1,6 @@
 ---
 - import_tasks: install_packages.yml
-- import_tasks: install_wp_cli.yml
+- import_tasks: install_wp_client.yml
 
 - stat:
     path: /var/www/wordpress
