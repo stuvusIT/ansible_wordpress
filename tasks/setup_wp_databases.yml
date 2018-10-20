@@ -26,13 +26,17 @@
   template:
     src: templates/wordpress.sql.j2
     dest: /tmp/wordpress.sql
-  when: not wordpress_import_db_file and wp_tables.stdout == ""
+  when:
+    - not wordpress_import_db_file
+    - wp_tables.stdout == ""
 
 - name: Write wordpress.sql to /tmp/wordpress.sql
   copy:
     src: "{{ inventory_hostname }}/wordpress.sql"
     dest: /tmp/wordpress.sql
-  when: wordpress_import_db_file and wp_tables.stdout == ""
+  when:
+    - wordpress_import_db_file
+    - wp_tables.stdout == ""
 
 - name: Import wordpress from /tmp/wordpress.sql
   mysql_db:
