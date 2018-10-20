@@ -3,7 +3,6 @@
 - import_tasks: install_wp_client.yml
 - import_tasks: setup_wp_databases.yml
 - import_tasks: setup_wp_directories.yml
-
 - import_tasks: setup_wp_plugins.yml
-- import_tasks: configure.yml
+- import_tasks: configure_wp_admins.yml
 - import_tasks: update_wp.yml

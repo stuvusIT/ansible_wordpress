@@ -18,7 +18,10 @@
     state: present
 
 - name: Check if DB contains any tables
-  shell: "mysql --user={{ wordpress_mysql_user }} --password={{ wordpress_mysql_password }} -D {{ wordpress_mysql_database_name }} -e \"show tables;\""
+  shell: >
+    "mysql --user={{ wordpress_mysql_user }}
+    --password={{ wordpress_mysql_password }}
+    -D {{ wordpress_mysql_database_name }} -e \"show tables;\""
   register: wp_tables
   failed_when: false
 
