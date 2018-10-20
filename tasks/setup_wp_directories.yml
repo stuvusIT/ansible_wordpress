@@ -1,8 +1,20 @@
 ---
+- name: Set correct file mode bits of www folder
+  file:
+    path: /var/www/
+    state: directory
+    mode: 0755
+
+- name: Check if wordpress dir exists
+  stat:
+    path: /var/www/wordpress
+  register: wordpress_dir
+
 - name: Download latest wordpress version
   get_url:
     url: https://wordpress.org/latest.zip
     dest: /tmp/wordpress_latest.zip
+  when: not wordpress_dir.stat.exists
 
 - name: Unarchive wordpress zip to /var/www
   unarchive:
@@ -11,6 +23,7 @@
     owner: www-data
     group: www-data
     remote_src: yes
+  when: not wordpress_dir.stat.exists
 
 - name: Copy theme
   unarchive:
@@ -22,15 +35,22 @@
     group: www-data
   when: wordpress_import_template
 
+- name: Check if wp-config.php already exists
+  stat:
+    path: /var/www/wordpress/wp-config.php
+  register: wp_config
+
 - name: Fetch random salts for WordPress config
   local_action: command curl https://api.wordpress.org/secret-key/1.1/salt/
   register: "wp_salt"
   become: no
+  when: not wp_config.stat.exists
 
 - name: Write wp-config.php
   template:
     src: templates/wp-config.php.j2
     dest: /var/www/wordpress/wp-config.php  
+  when: not wp_config.stat.exists
 
 - name: Copy wp-content if it exists
   copy:
