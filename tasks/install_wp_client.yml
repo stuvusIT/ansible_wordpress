@@ -18,7 +18,7 @@
 - name: Install wp-cli
   copy: 
     src: "{{ global_cache_dir }}/wp-cli.phar"
-    dest: "/usr/local/bin/wp"
+    dest: /usr/local/bin/wp
     mode: 0755
     owner: root
     group: root
