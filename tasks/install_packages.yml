@@ -10,4 +10,3 @@
       - php-mbstring
       - php-mcrypt
       - php-curl
-  when: ansible_pkg_mgr == "apt"
