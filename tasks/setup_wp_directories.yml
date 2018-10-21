@@ -63,8 +63,8 @@
   copy:
     src: "{{ inventory_hostname }}/wp-content"
     dest: /var/www/wordpress/
-    directory_mode: "u=rwX,g=rX,o-rwX"
-    mode: "u=rwX,g=rX,o-rwX"
+    directory_mode: 0755
+    mode: 0644
     owner: www-data
     group: www-data
   when: wordpress_import_wp_content
