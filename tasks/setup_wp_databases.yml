@@ -23,10 +23,17 @@
   register: wp_tables
   failed_when: false
 
+- name: Create SQL tempfile
+  tempfile:
+    state: file
+    suffix: .wordpress.sql
+  register: wp_sql_file
+  when: wordpress_import_db_file or wp_tables.stdout == ""
+
 - name: Write wordpress.sql
   template:
     src: templates/wordpress.sql.j2
-    dest: /tmp/wordpress.sql
+    dest: "{{ wp_sql_file.path }}"
   when:
     - not wordpress_import_db_file
     - wp_tables.stdout == ""
@@ -34,12 +41,18 @@
 - name: Write wordpress.sql to /tmp/wordpress.sql
   copy:
     src: "{{ inventory_hostname }}/wordpress.sql"
-    dest: /tmp/wordpress.sql
+    dest: "{{ wp_sql_file.path }}"
   when: wordpress_import_db_file
 
 - name: Import wordpress from /tmp/wordpress.sql
   mysql_db:
     state: import
     name: "{{ wordpress_mysql_database_name }}"
-    target: /tmp/wordpress.sql
+    target: "{{ wp_sql_file.path }}"
   when: wordpress_import_db_file or wp_tables.stdout == ""
+
+- name: Remove SQL tempfile
+  file:
+    path: "{{ wp_sql_file.path }}"
+    state: absent
+  when: wp_sql_file is defined
