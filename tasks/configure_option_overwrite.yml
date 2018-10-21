@@ -1,4 +1,4 @@
-
+---
 - name: Write settings to file
   copy:
     content: "{{ item.value | to_json }}"
@@ -10,4 +10,3 @@
   shell: "wp option update {{ item.key }} --path=/var/www/wordpress --format=json < {{ tmp_file.path }}"
   register: output
   changed_when: "'Updated' in output.stdout"
-

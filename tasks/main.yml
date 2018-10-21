@@ -1,56 +1,8 @@
 ---
-- name: Install required packages
-  apt:
-    name: "{{ item }}"
-  with_items:
-    - php-mysql
-    - python-mysqldb
-    - php-ldap
-    - php-imagick
-    - php-gd
-    - php-mbstring
-    - php-mcrypt
-    - php-curl
-  when: ansible_pkg_mgr == "apt"
-
-- stat:
-    path: /var/www/wordpress
-  register: wordpress_dir_exists
-
-- name: Download wp-cli
-  get_url:
-    url: 'https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar'
-    dest: "{{ global_cache_dir | mandatory }}/"
-  become: false
-  delegate_to: localhost
-
-- name: Install wp-cli
-  copy: 
-    src: "{{ global_cache_dir }}/wp-cli.phar"
-    dest: "/usr/local/bin/wp"
-    mode: 0755
-    owner: root
-    group: root
-
-- name: Update wp-cli
-  shell: sudo wp cli update
-
-- file:
-    path: /var/www/
-    state: directory
-    mode: 0755
-  when: not wordpress_dir_exists.stat.exists
-
-- import_tasks: install.yml
-  when: not wordpress_dir_exists.stat.exists
-
-- import_tasks: plugins.yml
-
-- import_tasks: configure.yml
-
-- name: Update wordpress
-  become_user: www-data
-  shell: wp core update --path=/var/www/wordpress
-  register: result
-  changed_when: "not 'Success: WordPress is up to date' in result.stdout"
-
+- import_tasks: install_packages.yml
+- import_tasks: install_wp_client.yml
+- import_tasks: setup_wp_databases.yml
+- import_tasks: setup_wp_directories.yml
+- import_tasks: setup_wp_plugins.yml
+- import_tasks: configure_wp_admins.yml
+- import_tasks: update_wp.yml

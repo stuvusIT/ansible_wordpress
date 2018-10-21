@@ -1,0 +1,12 @@
+---
+- name: Install required packages
+  apt:
+    name:
+      - php-mysql
+      - python-mysqldb
+      - php-ldap
+      - php-imagick
+      - php-gd
+      - php-mbstring
+      - php-mcrypt
+      - php-curl
