@@ -17,11 +17,10 @@
 
 - name: Check if DB contains any tables
   shell: >
-    "mysql --user={{ wordpress_mysql_user }}
+    mysql --user={{ wordpress_mysql_user }}
     --password={{ wordpress_mysql_password }}
-    -D {{ wordpress_mysql_database_name }} -e \"show tables;\""
+    --database={{ wordpress_mysql_database_name }} -e "show tables;"
   register: wp_tables
-  failed_when: false
 
 - name: Create SQL tempfile
   tempfile:
@@ -30,7 +29,7 @@
   register: wp_sql_file
   when: wordpress_import_db_file or wp_tables.stdout == ""
 
-- name: Write wordpress.sql
+- name: Create new WordPress SQL file
   template:
     src: templates/wordpress.sql.j2
     dest: "{{ wp_sql_file.path }}"
@@ -38,13 +37,13 @@
     - not wordpress_import_db_file
     - wp_tables.stdout == ""
 
-- name: Write wordpress.sql to /tmp/wordpress.sql
+- name: Copy WordPress SQL file from localhost
   copy:
     src: "{{ inventory_hostname }}/wordpress.sql"
     dest: "{{ wp_sql_file.path }}"
   when: wordpress_import_db_file
 
-- name: Import wordpress from /tmp/wordpress.sql
+- name: Import WordPress SQL file
   mysql_db:
     state: import
     name: "{{ wordpress_mysql_database_name }}"
@@ -55,4 +54,4 @@
   file:
     path: "{{ wp_sql_file.path }}"
     state: absent
-  when: wp_sql_file is defined
+  when: wp_sql_file.path is defined
