@@ -21,6 +21,7 @@
     --password={{ wordpress_mysql_password }}
     --database={{ wordpress_mysql_database_name }} -e "show tables;"
   register: wp_tables
+  changed_when: false
 
 - name: Create SQL tempfile
   tempfile:
