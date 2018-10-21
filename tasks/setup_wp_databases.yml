@@ -29,19 +29,17 @@
     dest: /tmp/wordpress.sql
   when:
     - not wordpress_import_db_file
-    - wp_tables.rc == 1
+    - wp_tables.stdout == ""
 
 - name: Write wordpress.sql to /tmp/wordpress.sql
   copy:
     src: "{{ inventory_hostname }}/wordpress.sql"
     dest: /tmp/wordpress.sql
-  when:
-    - wordpress_import_db_file
-    - wp_tables.rc == 1
+  when: wordpress_import_db_file
 
 - name: Import wordpress from /tmp/wordpress.sql
   mysql_db:
     state: import
     name: "{{ wordpress_mysql_database_name }}"
     target: /tmp/wordpress.sql
-  when: wp_tables.stdout == ""
+  when: wordpress_import_db_file or wp_tables.stdout == ""
