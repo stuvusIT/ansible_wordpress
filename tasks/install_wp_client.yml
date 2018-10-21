@@ -13,7 +13,7 @@
     dest: "{{ global_cache_dir | mandatory }}/"
   become: false
   delegate_to: localhost
-  when: not wp_cli_exec.stat.exists
+  run_once: true
 
 - name: Install wp-cli
   copy: 
