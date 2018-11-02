@@ -1,4 +1,11 @@
 ---
+- name: Create wp-cli cache directory
+  file:
+    path: /var/www/.wp-cli
+    state: directory
+    owner: www-data
+    group: www-data  
+
 - name: Download latest wordpress version
   get_url:
     url: https://wordpress.org/latest.zip
