@@ -66,12 +66,13 @@
     owner: www-data
     group: www-data
 
-- name: Copy wp-content if it exists
-  copy:
+# Synchronize is a lot faster than copy but requires chown to set
+# ownership correctly
+- name: Synchronize wp-content
+  synchronize:
     src: "{{ inventory_hostname }}/wp-content"
     dest: /var/www/wordpress/
-    directory_mode: 0755
-    mode: 0644
-    owner: www-data
-    group: www-data
+    owner: false
+    group: false
   when: wordpress_import_wp_content
+- shell: true; chown www-data:www-data -R /var/www/wordpress/wp-content
