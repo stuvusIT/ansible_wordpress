@@ -28,28 +28,31 @@
     state: file
     suffix: .wordpress.sql
   register: wp_sql_file
-  when: wordpress_import_db_file or wp_tables.stdout == ""
+  when: wp_tables.stdout == ""
 
 - name: Create new WordPress SQL file
   template:
     src: templates/wordpress.sql.j2
     dest: "{{ wp_sql_file.path }}"
   when:
-    - not wordpress_import_db_file
     - wp_tables.stdout == ""
+    - not wordpress_import_db_file
 
 - name: Copy WordPress SQL file from localhost
   copy:
     src: "{{ inventory_hostname }}/wordpress.sql"
     dest: "{{ wp_sql_file.path }}"
-  when: wordpress_import_db_file
+  when:
+    - wp_tables.stdout == ""
+    - wordpress_import_db_file
 
 - name: Import WordPress SQL file
   mysql_db:
     state: import
     name: "{{ wordpress_mysql_database_name }}"
     target: "{{ wp_sql_file.path }}"
-  when: wordpress_import_db_file or wp_tables.stdout == ""
+  when:
+    - wp_tables.stdout == ""
 
 - name: Remove SQL tempfile
   file:
