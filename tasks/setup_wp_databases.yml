@@ -14,6 +14,7 @@
 - name: Create a new database with name '{{ wordpress_mysql_database_name }}'
   mysql_db:
     name: "{{ wordpress_mysql_database_name }}"
+    encoding: utf8
 
 - name: Check if DB contains any tables
   shell: >
@@ -23,39 +24,45 @@
   register: wp_tables
   changed_when: false
 
-- name: Create SQL tempfile
-  tempfile:
-    state: file
-    suffix: .wordpress.sql
-  register: wp_sql_file
+- block:
+  - name: Create SQL tempfile
+    tempfile:
+      state: file
+      suffix: .wordpress.sql
+    register: wp_sql_file
+
+  - name: Create new WordPress SQL file
+    template:
+      src: templates/wordpress.sql.j2
+      dest: "{{ wp_sql_file.path }}"
+    when: not wordpress_import_db_file
+
+  - name: Copy WordPress SQL file from localhost
+    copy:
+      src: "{{ inventory_hostname }}/wordpress.sql"
+      dest: "{{ wp_sql_file.path }}"
+    when: wordpress_import_db_file
+
+  - name: Replace old URLs
+    replace:
+      path: "{{ wp_sql_file.path }}"
+      regexp: "{{ item }}"
+      replace: "{{ wordpress_siteurl }}"
+    loop: "{{ wordpress_import_replace_siteurls }}"
+    when: wordpress_import_db_file
+
+  - name: Import WordPress SQL file
+    mysql_db:
+      state: import
+      name: "{{ wordpress_mysql_database_name }}"
+      target: "{{ wp_sql_file.path }}"
+
+  - name: Remove SQL tempfile
+    file:
+      path: "{{ wp_sql_file.path }}"
+      state: absent
+
   when: wp_tables.stdout == ""
 
-- name: Create new WordPress SQL file
-  template:
-    src: templates/wordpress.sql.j2
-    dest: "{{ wp_sql_file.path }}"
-  when:
-    - wp_tables.stdout == ""
-    - not wordpress_import_db_file
 
-- name: Copy WordPress SQL file from localhost
-  copy:
-    src: "{{ inventory_hostname }}/wordpress.sql"
-    dest: "{{ wp_sql_file.path }}"
-  when:
-    - wp_tables.stdout == ""
-    - wordpress_import_db_file
 
-- name: Import WordPress SQL file
-  mysql_db:
-    state: import
-    name: "{{ wordpress_mysql_database_name }}"
-    target: "{{ wp_sql_file.path }}"
-  when:
-    - wp_tables.stdout == ""
-
-- name: Remove SQL tempfile
-  file:
-    path: "{{ wp_sql_file.path }}"
-    state: absent
-  when: wp_sql_file.path is defined

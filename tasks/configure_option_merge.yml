@@ -7,7 +7,7 @@
 
 - name: Write merged settings to file
   copy:
-    content: "{{  result.stdout | from_json | combine( item.value ) | to_json }}"
+    content: "{{ result.stdout | from_json | combine( item.value ) | to_json }}"
     dest: "{{ tmp_file.path }}"
   changed_when: False
 

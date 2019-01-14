@@ -12,15 +12,19 @@ This role requires the [php-fpm role](https://github.com/stuvusIT/php-fpm), the 
 
 ### General
 
-| Name                             | Required/Default   | Description                                                                   |
-|----------------------------------|:------------------:|-------------------------------------------------------------------------------|
-| `wordpress_mysql_password`       | :heavy_check_mark: | The password for the mysql database                                           |
-| `wordpress_default_user`         | `admin`            | This is the user that is created on setup                                     |
-| `wordpress_default_password`     | :heavy_check_mark: | The password that is used for the default user                                |
-| `wordpress_default_email`        | :heavy_check_mark: | The email address for the default user                                        |
-| `wordpress_plugin_merge_default` | `true`             | Setting if the options should be merged or overwritten                        |
-| `wordpress_plugins`              | `[]`               | List of plugins to install and options to set. For more information see below |
-| `wordpress_admins`               | `{}`               | List of admins to be created. For more information see below                  |
+| Name                             | Required/Default   | Description                                                                                               |
+|----------------------------------|:------------------:|-----------------------------------------------------------------------------------------------------------|
+| `wordpress_siteurl`              | :heavy_check_mark: | The basename of the domain where this wordpress instance should be reachable, e.g. `https://example.com`. |
+| `wordpress_home`                 | :heavy_check_mark: | The homepage of the wordpress instance                                                                    |
+| `wordpress_blogname`             | :heavy_check_mark: | The blog name (title) of this wordpress instance                                                          |
+| `wordpress_blogdescription`      | :heavy_check_mark: | The description of the wordpress instance                                                                 |
+| `wordpress_mysql_password`       | :heavy_check_mark: | The password for the mysql database                                                                       |
+| `wordpress_default_user`         | `admin`            | This is the user that is created on setup                                                                 |
+| `wordpress_default_password`     | :heavy_check_mark: | The password that is used for the default user                                                            |
+| `wordpress_default_email`        | :heavy_check_mark: | The email address for the default user                                                                    |
+| `wordpress_plugin_merge_default` | `true`             | Setting if the options should be merged or overwritten                                                    |
+| `wordpress_plugins`              | `[]`               | List of plugins to install and options to set. For more information see below                             |
+| `wordpress_admins`               | `{}`               | List of admins to be created. For more information see below                                              |
 
 ### Plugins
 
@@ -57,10 +61,11 @@ If no `password` is set its assumed to be either recovered over Mail or supplied
 
 ### Import wordpress instance
 
-| Name                          | Required/Default | Description                                                                                                                                 |
-|-------------------------------|------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
-| `wordpress_import_wp_content` | `false`          | If this is true ansible will try to copy the wp-content directory over to the remote host from   `files/{{inventory_hostname}}/wp-content/` |
-| `wordpress_import_db_file`    | `false`          | If this is true ansible will try to import an sql file from `files/{{inventory_hostname}}/wordpress.sql`                                    |
+| Name                                | Required/Default | Description                                                                                                                                  |
+|-------------------------------------|------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
+| `wordpress_import_wp_content`       | `false`          | If this is `true`, Ansible will try to copy the wp-content directory over to the remote host from `files/{{inventory_hostname}}/wp-content/` |
+| `wordpress_import_db_file`          | `false`          | If this is `true`, Ansible will try to import a sql file from `files/{{inventory_hostname}}/wordpress.sql`                                   |
+| `wordpress_import_replace_siteurls` | `[]`             | List of domains to replace with `wordpress_siteurl` in the SQL file before importing it, e.g. `http://www.example.com`.                      |
 
 ### Mail
 
