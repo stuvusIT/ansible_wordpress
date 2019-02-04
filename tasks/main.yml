@@ -1,8 +1,13 @@
 ---
 - import_tasks: install_packages.yml
-- import_tasks: install_wp_client.yml
+- import_tasks: install_wp_cli.yml
 - import_tasks: setup_wp_databases.yml
 - import_tasks: setup_wp_directories.yml
 - import_tasks: setup_wp_plugins.yml
 - import_tasks: configure_wp_admins.yml
-- import_tasks: update_wp.yml
+
+- name: Update wordpress
+  become_user: www-data
+  shell: wp core update --path=/var/www/wordpress
+  register: result
+  changed_when: "not 'Success: WordPress is up to date' in result.stdout"

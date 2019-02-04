@@ -10,6 +10,7 @@
     name: "{{ wordpress_mysql_user }}"
     password: "{{ wordpress_mysql_password }}"
     priv: '{{ wordpress_mysql_database_name }}.*:ALL,GRANT'
+  no_log: True
 
 - name: Create a new database with name '{{ wordpress_mysql_database_name }}'
   mysql_db:
@@ -22,8 +23,9 @@
     --password={{ wordpress_mysql_password }}
     --database={{ wordpress_mysql_database_name }} -e "show tables;"
   register: wp_tables
-  changed_when: false
+  changed_when: False
 
+# This block is only executed if the database contains no tables
 - block:
   - name: Create SQL tempfile
     tempfile:
@@ -43,7 +45,7 @@
       dest: "{{ wp_sql_file.path }}"
     when: wordpress_import_db_file
 
-  - name: Replace old URLs
+  - name: Replace old URLs in SQL file
     replace:
       path: "{{ wp_sql_file.path }}"
       regexp: "{{ item }}"

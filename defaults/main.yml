@@ -1,7 +1,17 @@
 ---
+wordpress_instances: []
+
 wordpress_mysql_database_name: wordpress
 wordpress_mysql_user: wordpress
 wordpress_table_prefix: "wp_"
+wordpress_import_wp_content: False
+wordpress_import_template: False
+wordpress_import_db_file: False
+wordpress_import_replace_siteurls: []
+wordpress_plugin_merge_default: True
+wordpress_plugins: []
+wordpress_admins: {}
+
 wordpress_users_can_register: 1
 wordpress_start_of_week: 1
 wordpress_use_balanceTags: 0
@@ -36,7 +46,6 @@ wordpress_gmt_offset: 0
 wordpress_default_email_category: 1
 wordpress_recently_edited: ''
 wordpress_template: 'twentyseventeen'
-wordpress_import_template: false
 wordpress_stylesheet: 'twentyseventeen'
 wordpress_comment_whitelist: 1
 wordpress_blacklist_keys: ''
@@ -102,9 +111,3 @@ wordpress_widget_tag_cloud: 'a:1:{s:12:\"_multiwidget\";i:1;}'
 wordpress_widget_nav_menu: 'a:1:{s:12:\"_multiwidget\";i:1;}'
 wordpress_cron: 'a:2:{i:1492259221;a:4:{s:16:\"wp_version_check\";a:1:{s:32:\"40cd750bba9870f18aada2478b24840a\";a:3:{s:8:\"schedule\";s:10:\"twicedaily\";s:4:\"args\";a:0:{}s:8:\"interval\";i:43200;}}s:17:\"wp_update_plugins\";a:1:{s:32:\"40cd750bba9870f18aada2478b24840a\";a:3:{s:8:\"schedule\";s:10:\"twicedaily\";s:4:\"args\";a:0:{}s:8:\"interval\";i:43200;}}s:16:\"wp_update_themes\";a:1:{s:32:\"40cd750bba9870f18aada2478b24840a\";a:3:{s:8:\"schedule\";s:10:\"twicedaily\";s:4:\"args\";a:0:{}s:8:\"interval\";i:43200;}}s:19:\"wp_scheduled_delete\";a:1:{s:32:\"40cd750bba9870f18aada2478b24840a\";a:3:{s:8:\"schedule\";s:5:\"daily\";s:4:\"args\";a:0:{}s:8:\"interval\";i:86400;}}}s:7:\"version\";i:2;}'
 wordpress_can_compress_scripts: 0
-wordpress_import_wp_content: false
-wordpress_import_db_file: false
-wordpress_import_replace_siteurls: []
-wordpress_plugin_merge_default: true
-wordpress_plugins: []
-wordpress_admins: {}

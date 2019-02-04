@@ -1,23 +1,11 @@
 ---
-- name: Create wp-cli cache directory
-  file:
-    path: /var/www/.wp-cli
-    state: directory
-    owner: www-data
-    group: www-data  
-
 - name: Download latest wordpress version
   get_url:
     url: https://wordpress.org/latest.zip
     dest: "{{ global_cache_dir | mandatory }}/wordpress_latest.zip"
-  become: false
+  become: False
   delegate_to: localhost
-  run_once: true
-
-- name: Check if wordpress dir exists
-  stat:
-    path: /var/www/wordpress
-  register: wordpress_dir
+  run_once: True
 
 - name: Unarchive wordpress zip to /var/www
   unarchive:
@@ -25,7 +13,7 @@
     dest: /var/www/
     owner: www-data
     group: www-data
-  when: not wordpress_dir.stat.exists
+    creates: /var/www/wordpress
 
 - name: Copy theme
   unarchive:
@@ -61,13 +49,12 @@
 
 - name: Write wp-config.php
   template:
-    src: templates/wp-config.php.j2
+    src: wp-config.php.j2
     dest: /var/www/wordpress/wp-config.php
     owner: www-data
     group: www-data
 
-# Synchronize is a lot faster than copy but requires chown to set
-# ownership correctly
+# Synchronize is a lot faster than copy but requires chown to set ownership correctly afterwards
 - name: Synchronize wp-content
   synchronize:
     src: "{{ inventory_hostname }}/wp-content"
@@ -75,4 +62,8 @@
     owner: false
     group: false
   when: wordpress_import_wp_content
-- shell: true; chown www-data:www-data -R /var/www/wordpress/wp-content
+
+- name: Set correct owner and group for wp-content folder
+  shell: chown www-data:www-data -R /var/www/wordpress/wp-content
+  args:
+    warn: False

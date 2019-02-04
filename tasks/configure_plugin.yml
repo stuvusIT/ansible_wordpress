@@ -1,13 +1,13 @@
 ---
-- name: Create tmp file
+- name: Create temporary file to store existing plugin options
   tempfile:
     state: file
-  register: tmp_file
+  register: plugin_tmp_file
   changed_when: False
 
-- name: Set owner for tmp file
+- name: Set owner for temporary file
   file:
-    path: "{{ tmp_file.path }}"
+    path: "{{ plugin_tmp_file.path }}"
     owner: www-data
     group: www-data
     mode: 0600
@@ -16,15 +16,19 @@
 - name: "Configure plugin and merge options"
   include_tasks: configure_option_merge.yml
   when: "plugin.options is defined and plugin.merge | default(wordpress_plugin_merge_default)"
-  with_dict: "{{ plugin.options }}"
+  loop: "{{ plugin.options | dict2items}}"
+  loop_control:
+    loop_var: plugin_option
 
 - name: "Configure plugin and overwrite options"
   include_tasks: configure_option_overwrite.yml
   when: "plugin.options is defined and not plugin.merge | default(wordpress_plugin_merge_default)"
-  with_dict: "{{ plugin.options }}"
+  loop: "{{ plugin.options | dict2items }}"
+  loop_control:
+    loop_var: plugin_option
 
-- name: Delete tmp file
+- name: Delete temporary file
   file:
-    path: "{{ tmp_file.path }}"
+    path: "{{ plugin_tmp_file.path }}"
     state: absent
   changed_when: False

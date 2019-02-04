@@ -1,12 +1,12 @@
 ---
-- name: Write settings to file
+- name: Write WordPress plugin options to file
   copy:
-    content: "{{ item.value | to_json }}"
-    dest: "{{ tmp_file.path }}"
+    content: "{{ plugin_option.value | to_json }}"
+    dest: "{{ plugin_tmp_file.path }}"
   changed_when: False
 
-- name: "Configure {{ plugin.name }}"
+- name: "Configure plugin '{{ plugin.name }}'"
   become_user: www-data
-  shell: "wp option update {{ item.key }} --path=/var/www/wordpress --format=json < {{ tmp_file.path }}"
+  shell: "wp option update {{ plugin_option.key }} --path=/var/www/wordpress --format=json < {{ plugin_tmp_file.path }}"
   register: output
   changed_when: "'Updated' in output.stdout"
