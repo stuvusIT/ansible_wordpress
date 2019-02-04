@@ -10,6 +10,7 @@
     name: "{{ wordpress_mysql_user }}"
     password: "{{ wordpress_mysql_password }}"
     priv: '{{ wordpress_mysql_database_name }}.*:ALL,GRANT'
+  no_log: True
 
 - name: Create a new database with name '{{ wordpress_mysql_database_name }}'
   mysql_db:
