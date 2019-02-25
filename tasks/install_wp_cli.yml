@@ -6,7 +6,7 @@
     path: /usr/local/bin/wp
   register: wp_cli_exec
 
-- name: Download wp-cli
+- name: Download wp-cli to local machine
   get_url:
     url: 'https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar'
     dest: "{{ global_cache_dir | mandatory }}/"

@@ -5,20 +5,20 @@
 // MySQL settings
 define('DB_NAME', '{{ wordpress_mysql_database_name }}');
 define('DB_USER', '{{ wordpress_mysql_user }}');
-define('DB_PASSWORD', '{{ wordpress_mysql_password | mandatory }}');
-define('DB_HOST', 'localhost:{{ mariadb_socket | mandatory }}');
+define('DB_PASSWORD', '{{ wp_instance.mysql_password }}');
+define('DB_HOST', 'localhost:{{ mariadb_socket }}');
 define('DB_CHARSET', 'utf8');
 define('DB_COLLATE', '');
 
 // WordPress database table prefix
-$table_prefix  = '{{ wordpress_table_prefix }}';
+$table_prefix  = '{{ wp_instance.table_prefix | default(wordpress_default_table_prefix) }}';
 
 // unique keys and salts for authentication
 require_once(ABSPATH . 'wp-salt.php');
 
 // home and siteurl are set here so changing via Ansible is possible
-define('WP_HOME', '{{ wordpress_home }}');
-define('WP_SITEURL', '{{ wordpress_siteurl }}');
+define('WP_HOME', '{{ wp_instance.home }}');
+define('WP_SITEURL', '{{ wp_instance.siteurl }}');
 
 // For developers: WordPress debugging mode.
 define('WP_DEBUG', false);

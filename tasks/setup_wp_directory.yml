@@ -1,0 +1,81 @@
+---
+- name: Download latest WordPress version to localhost
+  get_url:
+    url: https://wordpress.org/latest.tar.gz
+    dest: "{{ global_cache_dir | mandatory }}/wordpress_latest.tar.gz"
+  become: False
+  delegate_to: localhost
+  run_once: True
+
+- name: Create WordPress directory {{ wordpress_instance_path }}
+  file:
+    path: "{{ wordpress_instance_path }}"
+    state: directory
+    owner: www-data
+    group: www-data
+  register: wp_dir
+
+- name: Unarchive wordpress tar.gz to {{ wordpress_instance_path }}
+  unarchive:
+    src: "{{ global_cache_dir | mandatory }}/wordpress_latest.tar.gz"
+    dest: "{{ wordpress_instance_path }}/"
+    owner: www-data
+    group: www-data
+    extra_opts:
+      - --strip-components=1
+  when: wp_dir.changed
+
+- name: Import theme for instance '{{ wp_instance.name | mandatory }}'
+  unarchive:
+    src: "{{ inventory_hostname }}/{{ wp_instance.name }}/{{ wp_instance.template | default(wordpress_default_template) }}.zip"
+    dest: "{{ wordpress_instance_path }}/wp-content/themes/"
+    directory_mode: yes
+    mode: 0755
+    owner: www-data
+    group: www-data
+  when: wp_instance.import_template | default(wordpress_default_import_template)
+
+- name: Check if wp-salt.php already exists for instance '{{ wp_instance.name | mandatory }}'
+  stat:
+    path: "{{ wordpress_instance_path }}/wp-salt.php"
+  register: wp_salt
+
+- name: Fetch random salts for WordPress config for instance '{{ wp_instance.name | mandatory }}'
+  uri:
+    url: https://api.wordpress.org/secret-key/1.1/salt/
+    return_content: true
+  register: wp_generated_salts
+  become: no
+  delegate_to: localhost
+  when: not wp_salt.stat.exists
+
+- name: Write wp-salt.php for instance '{{ wp_instance.name | mandatory }}'
+  template:
+    src: wp-salt.php.j2
+    dest: "{{ wordpress_instance_path }}/wp-salt.php"
+    owner: www-data
+    group: www-data
+  when: not wp_salt.stat.exists
+
+- name: Write wp-config.php for instance '{{ wp_instance.name | mandatory }}'
+  template:
+    src: wp-config.php.j2
+    dest: "{{ wordpress_instance_path }}/wp-config.php"
+    owner: www-data
+    group: www-data
+
+# Synchronize is a lot faster than copy but requires to set ownership correctly afterwards
+- name: Synchronize wp-content for instance '{{ wp_instance.name | mandatory }}'
+  synchronize:
+    src: "{{ inventory_hostname }}/{{ wp_instance.name }}/wp-content"
+    dest: "{{ wordpress_instance_path }}/"
+    owner: false
+    group: false
+  when: wp_instance.import_wp_content | default(wordpress_default_import_wp_content)
+
+- name: Set correct owner and group for instance '{{ wp_instance.name | mandatory }}' wp-content folder
+  file:
+    path: "{{ wordpress_instance_path }}/wp-content"
+    state: directory
+    recurse: True
+  when: wp_instance.import_wp_content | default(wordpress_default_import_wp_content)

@@ -1,0 +1,19 @@
+---
+- set_fact:
+    wordpress_mysql_database_name: "{{ wp_instance.database_name | default(wp_instance.name) | mandatory }}"
+    wordpress_mysql_user: "{{ wp_instance.mysql_user | default(wp_instance.name) | mandatory }}"
+    wordpress_instance_path: "/var/www/wordpress-{{ wp_instance.name | mandatory }}"
+
+- import_tasks: setup_wp_database.yml
+
+- import_tasks: setup_wp_directory.yml
+
+# includes configure_plugin, which includes the configure_option files
+- import_tasks: setup_wp_plugins.yml
+- import_tasks: configure_wp_admins.yml
+
+- name: Update wordpress instance '{{ wp_instance.name | mandatory }}'
+  become_user: www-data
+  shell: "wp core update --path={{ wordpress_instance_path }}"
+  register: result
+  changed_when: "not 'Success: WordPress is up to date' in result.stdout"

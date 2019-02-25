@@ -1,13 +1,18 @@
 ---
-- import_tasks: install_packages.yml
-- import_tasks: install_wp_cli.yml
-- import_tasks: setup_wp_databases.yml
-- import_tasks: setup_wp_directories.yml
-- import_tasks: setup_wp_plugins.yml
-- import_tasks: configure_wp_admins.yml
+- block:
+  - import_tasks: install_packages.yml
+  - import_tasks: install_wp_cli.yml
+  - name: Remove anonymous DB user account
+    mysql_user:
+      name: ''
+      host: localhost
+      state: absent
+  when: wordpress_instances | length > 0
 
-- name: Update wordpress
-  become_user: www-data
-  shell: wp core update --path=/var/www/wordpress
-  register: result
-  changed_when: "not 'Success: WordPress is up to date' in result.stdout"
+- include_tasks: setup_wp_instance.yml
+  loop: "{{ wordpress_instances }}"
+  loop_control:
+    loop_var: wp_instance
+    label: "{{ wp_instance.name }}"
+
+# mandatory: name, home, siteurl, mysql_password, default_password, blogname, blogdescription

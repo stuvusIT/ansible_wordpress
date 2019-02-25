@@ -1,0 +1,64 @@
+---
+- name: Create DB user '{{ wordpress_mysql_user }}'
+  mysql_user:
+    name: "{{ wordpress_mysql_user }}"
+    password: "{{ wp_instance.mysql_password | mandatory }}"
+    priv: '{{ wordpress_mysql_database_name }}.*:ALL,GRANT'
+  no_log: True
+
+- name: Create a new database with name '{{ wp_instance.database_name | default(wp_instance.name) }}'
+  mysql_db:
+    name: "{{ wordpress_mysql_database_name }}"
+    encoding: utf8
+
+- name: Check if DB '{{ wp_instance.database_name | default(wp_instance.name) }}' contains any tables
+  shell: >
+    mysql --user={{ wordpress_mysql_user }}
+    --password={{ wp_instance.mysql_password | mandatory }}
+    --database={{ wordpress_mysql_database_name }} -e "show tables;"
+  register: wp_tables
+  changed_when: False
+
+# This block is only executed if the database contains no tables
+- block:
+  - name: Create SQL tempfile for instance '{{ wp_instance.name | mandatory }}'
+    tempfile:
+      state: file
+      suffix: .wordpress.sql
+    register: wp_sql_file
+
+  - name: Template fresh WordPress SQL file for instance '{{ wp_instance.name | mandatory }}'
+    template:
+      src: templates/wordpress.sql.j2
+      dest: "{{ wp_sql_file.path }}"
+    when: not wp_instance.import_db_file | default(wordpress_default_import_db_file)
+
+  - name: Copy existing WordPress SQL file from localhost for instance '{{ wp_instance.name | mandatory }}'
+    copy:
+      src: "{{ inventory_hostname }}/{{ wp_instance.name }}/wordpress.sql"
+      dest: "{{ wp_sql_file.path }}"
+    when: wp_instance.import_db_file | default(wordpress_default_import_db_file)
+
+  - name: Replace old URLs in SQL file for instance '{{ wp_instance.name | mandatory }}'
+    replace:
+      path: "{{ wp_sql_file.path }}"
+      regexp: "{{ item }}"
+      replace: "{{ wp_instance.siteurl }}"
+    loop: "{{ wp_instance.import_replace_siteurls }}"
+    when: wp_instance.import_db_file | default(wordpress_default_import_db_file)
+
+  - name: Import WordPress SQL file for instance '{{ wp_instance.name | mandatory }}'
+    mysql_db:
+      state: import
+      name: "{{ wordpress_mysql_database_name }}"
+      target: "{{ wp_sql_file.path }}"
+
+  - name: Remove SQL tempfile for instance '{{ wp_instance.name | mandatory }}'
+    file:
+      path: "{{ wp_sql_file.path }}"
+      state: absent
+
+  when: wp_tables.stdout == ""
+
+
+

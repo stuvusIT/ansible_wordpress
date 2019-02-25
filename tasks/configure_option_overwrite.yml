@@ -5,8 +5,8 @@
     dest: "{{ plugin_tmp_file.path }}"
   changed_when: False
 
-- name: "Configure plugin '{{ plugin.name }}'"
+- name: Configure plugin '{{ plugin.name }}' on instance '{{ wp_instance.name | mandatory }}'
   become_user: www-data
-  shell: "wp option update {{ plugin_option.key }} --path=/var/www/wordpress --format=json < {{ plugin_tmp_file.path }}"
+  shell: "wp option update {{ plugin_option.key }} --path={{ wordpress_instance_path }} --format=json < {{ plugin_tmp_file.path }}"
   register: output
   changed_when: "'Updated' in output.stdout"

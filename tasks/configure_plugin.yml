@@ -1,11 +1,11 @@
 ---
-- name: Create temporary file to store existing plugin options
+- name: Create temporary file to store existing plugin options for instance '{{ wp_instance.name | mandatory }}'
   tempfile:
     state: file
   register: plugin_tmp_file
   changed_when: False
 
-- name: Set owner for temporary file
+- name: Set owner for temporary file for instance '{{ wp_instance.name | mandatory }}'
   file:
     path: "{{ plugin_tmp_file.path }}"
     owner: www-data
@@ -13,21 +13,25 @@
     mode: 0600
   changed_when: False
 
-- name: "Configure plugin and merge options"
+- name: Configure plugin '{{ plugin.name }}' and merge options for instance '{{ wp_instance.name | mandatory }}'
   include_tasks: configure_option_merge.yml
-  when: "plugin.options is defined and plugin.merge | default(wordpress_plugin_merge_default)"
+  when:
+    - plugin.options is defined
+    - plugin.merge | default(wp_instance.plugin_merge_default) | default(wordpress_plugin_merge_default)
   loop: "{{ plugin.options | dict2items}}"
   loop_control:
     loop_var: plugin_option
 
-- name: "Configure plugin and overwrite options"
+- name: Configure plugin '{{ plugin.name }}' and overwrite options for instance '{{ wp_instance.name | mandatory }}'
   include_tasks: configure_option_overwrite.yml
-  when: "plugin.options is defined and not plugin.merge | default(wordpress_plugin_merge_default)"
+  when:
+    - plugin.options is defined
+    - not plugin.merge | default(wp_instance.plugin_merge_default) | default(wordpress_plugin_merge_default)
   loop: "{{ plugin.options | dict2items }}"
   loop_control:
     loop_var: plugin_option
 
-- name: Delete temporary file
+- name: Delete temporary file for instance '{{ wp_instance.name | mandatory }}'
   file:
     path: "{{ plugin_tmp_file.path }}"
     state: absent

@@ -1,17 +1,16 @@
 ---
-- name: Install plugins
+- name: Install plugins for instance '{{ wp_instance.name | mandatory }}'
   become_user: www-data
-  command: "wp plugin install {{ item.name }} --path=/var/www/wordpress --activate"
+  command: "wp plugin install {{ item.name }} --path={{ wordpress_instance_path }} --activate"
   register: output
   changed_when: "'Installing' in output.stdout"
-  loop: "{{ wordpress_plugins }}"
+  loop: "{{ wp_instance.plugins | default(wordpress_default_plugins) }}"
 
-- name: Configure plugin
-  include_tasks: configure_plugin.yml
-  loop: "{{ wordpress_plugins }}"
+- include_tasks: configure_plugin.yml
+  loop: "{{ wp_instance.plugins | default(wordpress_default_plugins) }}"
   loop_control:
     loop_var: plugin
 
-- name: Update plugins
+- name: Update plugins for instance '{{ wp_instance.name | mandatory }}'
   become_user: www-data
-  command: wp plugin update --all --path=/var/www/wordpress
+  command: "wp plugin update --all --path={{ wordpress_instance_path }}"
