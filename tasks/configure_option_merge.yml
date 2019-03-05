@@ -1,18 +1,18 @@
 ---
-- name: "Read {{ item.key }}"
+- name: Read plugin options for '{{ plugin.name }}' on instance '{{ wp_instance.name | mandatory }}'
   become_user: www-data
-  shell: "wp option get {{ item.key }} --path=/var/www/wordpress --format=json"
+  command: "wp option get {{ plugin_option.key }} --path={{ wordpress_instance_path }} --format=json"
   changed_when: False
-  register: result
+  register: existing_plugin_settings
 
-- name: Write merged settings to file
+- name: Write merged plugin settings to file
   copy:
-    content: "{{  result.stdout | from_json | combine( item.value ) | to_json }}"
-    dest: "{{ tmp_file.path }}"
+    content: "{{ existing_plugin_settings.stdout | from_json | combine( plugin_option.value ) | to_json }}"
+    dest: "{{ plugin_tmp_file.path }}"
   changed_when: False
 
-- name: "Configure {{ plugin.name }}"
+- name: Configure plugin '{{ plugin.name }}' on instance '{{ wp_instance.name | mandatory }}'
   become_user: www-data
-  shell: "wp option update {{ item.key }} --path=/var/www/wordpress --format=json < {{ tmp_file.path }}"
+  shell: "wp option update {{ plugin_option.key }} --path={{ wordpress_instance_path }} --format=json < {{ plugin_tmp_file.path }}"
   register: output
   changed_when: "'Updated' in output.stdout"

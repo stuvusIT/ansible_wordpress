@@ -1,22 +1,21 @@
 ---
-# The following tasks are responsible for installing wpi-cli, the command line
-# interface for WordPress.
+# The following tasks are responsible for installing wp-cli, the command line interface for WordPress.
 
-- name: Check if wp-cli is present
+- name: Check whether wp-cli is present
   stat:
     path: /usr/local/bin/wp
   register: wp_cli_exec
 
-- name: Download wp-cli
+- name: Download wp-cli to local machine
   get_url:
     url: 'https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar'
     dest: "{{ global_cache_dir | mandatory }}/"
-  become: false
+  become: False
   delegate_to: localhost
-  run_once: true
+  run_once: True
 
 - name: Install wp-cli
-  copy: 
+  copy:
     src: "{{ global_cache_dir }}/wp-cli.phar"
     dest: /usr/local/bin/wp
     mode: 0755
@@ -24,5 +23,12 @@
     group: root
   when: not wp_cli_exec.stat.exists
 
+- name: Create wp-cli cache directory
+  file:
+    path: /var/www/.wp-cli
+    state: directory
+    owner: www-data
+    group: www-data
+
 - name: Update wp-cli
-  shell: wp cli update
+  command: wp cli update

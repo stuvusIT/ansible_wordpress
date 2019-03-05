@@ -1,33 +1,43 @@
 ---
-- name: Create admins
+- name: Create WordPress admins on instance '{{ wp_instance.name | mandatory }}'
   become_user: www-data
-  shell: "wp user create {{ item.key }} {{ item.value.email }} --display_name='{{ item.value.name }}' --user_pass={{ item.value.password }} --role=administrator --path=/var/www/wordpress"
+  command: "wp user create {{ item.key }} {{ item.value.email }} --display_name='{{ item.value.name }}' --user_pass={{ item.value.password }} --role=administrator --path={{ wordpress_instance_path }}"
   when: item.value.email is defined and item.value.password is defined
   register: result
   changed_when: "'Created user' in result.stdout"
-  failed_when: "result.rc != 0 and not 'username is already registered' in result.stderr"
-  with_dict: "{{ wordpress_admins }}"
+  failed_when:
+    - result.rc != 0
+    - not "username is already registered" in result.stderr
+  loop: "{{ wp_instance.admins | default(wordpress_default_admins) | dict2items }}"
 
-- name: Create admins
+- name: Create WordPress admins on instance '{{ wp_instance.name | mandatory }}'
   become_user: www-data
-  shell: "wp user create {{ item.key }} {{ item.value.email }} --display_name='{{ item.value.name }}' --role=administrator --path=/var/www/wordpress"
-  when: item.value.email is defined and not item.value.password is defined
+  command: "wp user create {{ item.key }} {{ item.value.email }} --display_name='{{ item.value.name }}' --role=administrator --path={{ wordpress_instance_path }}"
+  when:
+    - item.value.email is defined
+    - not item.value.password is defined
   register: result
   changed_when: "'Created user' in result.stdout"
-  failed_when: "result.rc != 0 and not 'username is already registered' in result.stderr"
-  with_dict: "{{ wordpress_admins }}"
+  failed_when:
+    - result.rc != 0
+    - not "username is already registered" in result.stderr
+  loop: "{{ wp_instance.admins | default(wordpress_default_admins) | dict2items }}"
 
-- name: Update admin
+- name: Update WordPress admins on instance '{{ wp_instance.name | mandatory }}'
   become_user: www-data
-  shell: "wp user update {{ item.key }} --user_email='{{ item.value.email }}' --display_name='{{ item.value.name }}' --role=administrator --path=/var/www/wordpress"
-  when: "item.value.email is defined and not item.value.password is defined"
-  changed_when: false
-  with_dict: "{{ wordpress_admins }}"
+  command: "wp user update {{ item.key }} --user_email='{{ item.value.email }}' --display_name='{{ item.value.name }}' --role=administrator --path={{ wordpress_instance_path }}"
+  when:
+    - item.value.email is defined
+    - not item.value.password is defined
+  changed_when: False
+  loop: "{{ wp_instance.admins | default(wordpress_default_admins) | dict2items }}"
 
-- name: Update admin
+- name: Update WordPress admins on instance '{{ wp_instance.name | mandatory }}'
   become_user: www-data
-  shell: "wp user update {{ item.key }} --user_email='{{ item.value.email }}' --display_name='{{ item.value.name }}' --user_pass={{ item.value.password }} --role=administrator --path=/var/www/wordpress"
-  when: "item.value.email is defined and item.value.password is defined"
-  changed_when: false
-  with_dict: "{{ wordpress_admins }}"
+  command: "wp user update {{ item.key }} --user_email='{{ item.value.email }}' --display_name='{{ item.value.name }}' --user_pass={{ item.value.password }} --role=administrator --path={{ wordpress_instance_path }}"
+  when:
+    - item.value.email is defined
+    - item.value.password is defined
+  changed_when: False
+  loop: "{{ wp_instance.admins | default(wordpress_default_admins) | dict2items }}"
 
