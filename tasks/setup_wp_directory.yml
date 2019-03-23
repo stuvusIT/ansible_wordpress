@@ -73,6 +73,13 @@
     group: false
   when: wp_instance.import_wp_content | default(wordpress_default_import_wp_content)
 
+- name: Create WordPress temp directory {{ wordpress_instance_path }}/wp-content/tmp
+  file:
+    path: "{{ wordpress_instance_path }}/wp-content/tmp"
+    state: directory
+    owner: www-data
+    group: www-data
+
 - name: Set correct owner and group for instance '{{ wp_instance.name | mandatory }}' wp-content folder
   file:
     path: "{{ wordpress_instance_path }}/wp-content"

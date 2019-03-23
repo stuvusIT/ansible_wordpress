@@ -15,6 +15,7 @@ The role has one top-level variable `wordpress_instances`, which is a list of di
 ### General
 
 Each entry in `wordpress_instances` describes one WordPress instance which will be available in `/var/www/wordpress-{{instance.name}}`.
+A temporary directory for each instance will be created at `/var/www/wordpress-{{instance.name}}/wp-content/tmp` and should be configured accordingly in php.
 A lot of configuration keys are available, only the most important ones are described here.
 The variables described in the [defaults](defaults/main.yml) are used as default if a WordPress instance does not contain the respective key (e.g. if the instance does not define `admins`, `wordpress_default_admins` is used).
 
