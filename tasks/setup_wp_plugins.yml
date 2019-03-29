@@ -13,4 +13,6 @@
 
 - name: Update plugins for instance '{{ wp_instance.name | mandatory }}'
   become_user: www-data
-  command: "wp plugin update --all --path={{ wordpress_instance_path }}"
+  command: wp plugin update --all --exclude={{ wp_instance.plugins | default(wordpress_default_plugins) | json_query(query_plugins_to_exclude) | join(',') }} --path={{ wordpress_instance_path }}
+  vars:
+    query_plugins_to_exclude: "[?contains(keys(@), 'update')] | [?!update].name"
