@@ -69,11 +69,12 @@ The variables described in the [defaults](defaults/main.yml) are used as default
 
 `plugins` is a list of dicts with the following keys:
 
-| Name      | Required/Default                      | Description                                                                               |
-|-----------|---------------------------------------|-------------------------------------------------------------------------------------------|
-| `name`    | :heavy_check_mark:                    | The name(slug) of the plugin to be installed                                              |
-| `merge`   | `{{ instance.plugin_merge_default }}` | Setting whether the options should be merged or overwritten                               |
-| `options` | :heavy_check_mark:                    | Dict containing the plugin options (the key is the same key as in the WordPress database) |
+| Name      | Required/Default                      | Description                                                                                                                                                |
+|-----------|---------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `name`    | :heavy_check_mark:                    | The name(slug) of the plugin to be installed                                                                                                               |
+| `merge`   | `{{ instance.plugin_merge_default }}` | Setting whether the options should be merged or overwritten                                                                                                |
+| `options` | :heavy_check_mark:                    | Dict containing the plugin options (the key is the same key as in the WordPress database)                                                                  |
+| `update`  | `True`                                | If this is `False`, this plugin will be excluded from updating. By default, all plugins are updated, even if they're not configured in the `plugins` list. |
 
 ### Admins
 
