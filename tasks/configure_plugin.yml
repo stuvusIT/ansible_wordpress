@@ -15,21 +15,21 @@
 
 - name: Configure plugin '{{ plugin.name }}' and merge options for instance '{{ wp_instance.name | mandatory }}'
   include_tasks: configure_option_merge.yml
+  loop: "{{ plugin.options | default({}) | dict2items}}"
+  loop_control:
+    loop_var: plugin_option
   when:
     - plugin.options is defined
     - plugin.merge | default(wp_instance.plugin_merge_default) | default(wordpress_plugin_merge_default)
-  loop: "{{ plugin.options | dict2items}}"
-  loop_control:
-    loop_var: plugin_option
 
 - name: Configure plugin '{{ plugin.name }}' and overwrite options for instance '{{ wp_instance.name | mandatory }}'
   include_tasks: configure_option_overwrite.yml
+  loop: "{{ plugin.options | default({}) | dict2items }}"
+  loop_control:
+    loop_var: plugin_option
   when:
     - plugin.options is defined
     - not plugin.merge | default(wp_instance.plugin_merge_default) | default(wordpress_plugin_merge_default)
-  loop: "{{ plugin.options | dict2items }}"
-  loop_control:
-    loop_var: plugin_option
 
 - name: Delete temporary file for instance '{{ wp_instance.name | mandatory }}'
   file:
