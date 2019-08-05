@@ -44,7 +44,7 @@
       path: "{{ wp_sql_file.path }}"
       regexp: "{{ item }}"
       replace: "{{ wp_instance.siteurl }}"
-    loop: "{{ wp_instance.import_replace_siteurls }}"
+    loop: "{{ wp_instance.import_replace_siteurls | default(wordpress_default_import_replace_siteurls) }}"
     when: wp_instance.import_db_file | default(wordpress_default_import_db_file)
 
   - name: Import WordPress SQL file for instance '{{ wp_instance.name | mandatory }}'
