@@ -9,5 +9,4 @@
       - php-imagick
       - php-gd
       - php-mbstring
-      - php-mcrypt
       - php-curl
