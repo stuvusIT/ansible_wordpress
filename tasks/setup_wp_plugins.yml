@@ -1,7 +1,7 @@
 ---
 - name: Install plugins for instance '{{ wp_instance.name | mandatory }}'
   become_user: www-data
-  command: "wp plugin install {{ item.name }} --path={{ wordpress_instance_path }} --activate"
+  shell: "wp plugin is-installed {{ item.name }} --path={{ wordpress_instance_path }} || wp plugin install {{ item.name }} --path={{ wordpress_instance_path }} --activate"
   register: output
   changed_when: "'Installing' in output.stdout"
   loop: "{{ wp_instance.plugins | default(wordpress_default_plugins) }}"
