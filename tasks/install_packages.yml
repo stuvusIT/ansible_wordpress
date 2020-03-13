@@ -10,3 +10,4 @@
       - php-gd
       - php-mbstring
       - php-curl
+      - php-xml
