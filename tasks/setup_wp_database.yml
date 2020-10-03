@@ -7,7 +7,7 @@
   no_log: True
 
 - name: Create a new database with name '{{ wp_instance.database_name | default(wp_instance.name) }}'
-  mysql_db:
+  community.mysql.mysql_db:
     name: "{{ wordpress_mysql_database_name }}"
     encoding: utf8
 
@@ -48,7 +48,7 @@
     when: wp_instance.import_db_file | default(wordpress_default_import_db_file)
 
   - name: Import WordPress SQL file for instance '{{ wp_instance.name | mandatory }}'
-    mysql_db:
+    community.mysql.mysql_db:
       state: import
       name: "{{ wordpress_mysql_database_name }}"
       target: "{{ wp_sql_file.path }}"
