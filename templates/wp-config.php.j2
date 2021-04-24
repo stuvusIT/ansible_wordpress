@@ -13,9 +13,6 @@ define('DB_COLLATE', '');
 // WordPress database table prefix
 $table_prefix  = '{{ wp_instance.table_prefix | default(wordpress_default_table_prefix) }}';
 
-// unique keys and salts for authentication
-require_once(ABSPATH . 'wp-salt.php');
-
 // home and siteurl are set here so changing via Ansible is possible
 define('WP_HOME', '{{ wp_instance.home }}');
 define('WP_SITEURL', '{{ wp_instance.siteurl }}');
@@ -29,6 +26,9 @@ define('FS_METHOD', 'direct');
 // Absolute path to the WordPress directory
 if ( !defined('ABSPATH') )
 	define('ABSPATH', dirname(__FILE__) . '/');
+
+// unique keys and salts for authentication
+require_once(ABSPATH . 'wp-salt.php');
 
 // Set up WordPress vars and included files
 require_once(ABSPATH . 'wp-settings.php');
