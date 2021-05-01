@@ -2,20 +2,24 @@
 - name: Create DB user '{{ wordpress_mysql_user }}'
   mysql_user:
     name: "{{ wordpress_mysql_user }}"
-    password: "{{ wp_instance.mysql_password | mandatory }}"
-    priv: '{{ wordpress_mysql_database_name }}.*:ALL,GRANT'
+    password: "{{ wordpress_mysql_password }}"
+    priv: '{{ wordpress_mysql_db }}.*:ALL,GRANT'
   no_log: True
+  when: wordpress_mysql_create_user
 
 - name: Create a new database with name '{{ wp_instance.database_name | default(wp_instance.name) }}'
   community.mysql.mysql_db:
-    name: "{{ wordpress_mysql_database_name }}"
+    name: "{{ wordpress_mysql_db }}"
     encoding: utf8
+  when: wordpress_mysql_create_db
 
 - name: Check if DB '{{ wp_instance.database_name | default(wp_instance.name) }}' contains any tables
   shell: >
-    mysql --user={{ wordpress_mysql_user }}
-    --password={{ wp_instance.mysql_password | mandatory }}
-    --database={{ wordpress_mysql_database_name }} -e "show tables;"
+    mysql
+    --host={{ wordpress_mysql_host }}
+    --user={{ wordpress_mysql_user }}
+    --password={{ wordpress_mysql_password }}
+    --database={{ wordpress_mysql_db }} -e "show tables;"
   register: wp_tables
   changed_when: False
 
@@ -50,7 +54,10 @@
   - name: Import WordPress SQL file for instance '{{ wp_instance.name | mandatory }}'
     community.mysql.mysql_db:
       state: import
-      name: "{{ wordpress_mysql_database_name }}"
+      login_host: "{{ wordpress_mysql_host }}"
+      login_user: "{{ wordpress_mysql_user }}"
+      login_password: "{{ wordpress_mysql_password }}"
+      name: "{{ wordpress_mysql_db }}"
       target: "{{ wp_sql_file.path }}"
 
   - name: Remove SQL tempfile for instance '{{ wp_instance.name | mandatory }}'
