@@ -3,10 +3,10 @@
 
 
 // MySQL settings
-define('DB_NAME', '{{ wordpress_mysql_database_name }}');
+define('DB_NAME', '{{ wordpress_mysql_db }}');
 define('DB_USER', '{{ wordpress_mysql_user }}');
-define('DB_PASSWORD', '{{ wp_instance.mysql_password }}');
-define('DB_HOST', 'localhost:{{ mariadb_socket }}');
+define('DB_PASSWORD', '{{ wordpress_mysql_password }}');
+define('DB_HOST', '{{ wordpress_mysql_host }}');
 define('DB_CHARSET', 'utf8');
 define('DB_COLLATE', '');
 

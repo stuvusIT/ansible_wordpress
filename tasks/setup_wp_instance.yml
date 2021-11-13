@@ -1,8 +1,12 @@
 ---
 - set_fact:
-    wordpress_mysql_database_name: "{{ wp_instance.database_name | default(wp_instance.name) | mandatory }}"
-    wordpress_mysql_user: "{{ wp_instance.mysql_user | default(wp_instance.name) | mandatory }}"
+    wordpress_mysql_host: "{{ wp_instance.mysql_host | default('localhost:/var/run/mysqld/mysqld.sock') }}"
+    wordpress_mysql_user: "{{ wp_instance.mysql_user | default(wp_instance.name | mandatory) }}"
+    wordpress_mysql_db: "{{ wp_instance.mysql_db | default(wp_instance.name | mandatory) }}"
+    wordpress_mysql_password: "{{ wp_instance.mysql_password | mandatory }}"
     wordpress_instance_path: "/var/www/wordpress-{{ wp_instance.name | mandatory }}"
+    wordpress_mysql_create_user: "{{ wp_instance.mysql_create_user | default(true) }}"
+    wordpress_mysql_create_db: "{{ wp_instance.mysql_create_db | default(true) }}"
 
 - import_tasks: setup_wp_database.yml
 

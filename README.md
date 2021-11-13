@@ -24,7 +24,7 @@ The variables described in the [defaults](defaults/main.yml) are used as default
 
 
 | Name                   | Required/Default        | Description                                                                                                                           |
-|------------------------|:-----------------------:|---------------------------------------------------------------------------------------------------------------------------------------|
+| ---------------------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
 | `name`                 | :heavy_check_mark:      | A name to describe the instance. This is used e.g. to name the WordPress folder, the database and the database user of this instance. |
 | `siteurl`              | :heavy_check_mark:      | The basename of the domain where this WordPress instance should be reachable, e.g. `https://example.com`.                             |
 | `home`                 | :heavy_check_mark:      | The homepage of the WordPress instance                                                                                                |
@@ -41,25 +41,28 @@ The variables described in the [defaults](defaults/main.yml) are used as default
 
 ### Database connection
 
-| Name             | Required/Default    | Description                                        |
-|------------------|:-------------------:|----------------------------------------------------|
-| `database_name`  | `{{instance.name}}` | The database to create and use for this instance   |
-| `table_prefix`   | `wp_`               | The database to create and use for this instance   |
-| `mysql_user`     | `{{instance.name}}` | The MySQL user to create and use for this instance |
-| `mysql_password` | :heavy_check_mark:  | The password for the MySQL user                    |
+| Name                | Required/Default                        | Description                                          |
+| ------------------- | --------------------------------------- | ---------------------------------------------------- |
+| `mysql_host`        | `localhost:/var/run/mysqld/mysqld.sock` |
+| `mysql_user`        | `{{instance.name}}`                     | The MySQL user to use for this instance              |
+| `mysql_create_user` | `True`                                  | Whether to create the MySQL user if it doesn't exist |
+| `mysql_db`          | `{{instance.name}}`                     | The database to create and use for this instance     |
+| `mysql_create_db`   | `True`                                  | Whether to create the database if it doesn't exist   |
+| `mysql_password`    | :heavy_check_mark:                      | The password for the MySQL user                      |
+| `table_prefix`      | `wp_`                                   | The database to create and use for this instance     |
 
 ### Mail
 
-| Name                             | Required/Default   | Description                                                                                               |
-|----------------------------------|:------------------:|-----------------------------------------------------------------------------------------------------------|
-| `mailserver_url`   | `mail.example.com`  | URI of the mail server         |
+| Name               | Required/Default    | Description                   |
+| ------------------ | ------------------- | ----------------------------- |
+| `mailserver_url`   | `mail.example.com`  | URI of the mail server        |
 | `mailserver_login` | `login@example.com` | Login name for the mail serer |
 | `mailserver_pass`  | `password`          | Password for the mail server  |
-| `mailserver_port`  | `110`               | Port for the mail server             |
+| `mailserver_port`  | `110`               | Port for the mail server      |
 
 ### Importing
 | Name                      | Required/Default | Description                                                                                                                                                                          |
-|---------------------------|:----------------:|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ------------------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `import_template`         | `False`          | If this is true ansible will try to extract a zip file from   `files/{{inventory_hostname}}/{{instance.name}}{{ wordpress_template }}.zip ` and install it in the WordPress instance |
 | `import_wp_content`       | `False`          | If this is `True`, Ansible will try to copy the wp-content directory over to the remote host from `files/{{inventory_hostname}}/{{instance.name}}/wp-content/`                       |
 | `import_db_file`          | `False`          | If this is `True`, Ansible will try to import a sql file from `files/{{inventory_hostname}}/{{instance.name}}/wordpress.sql`                                                         |
@@ -70,7 +73,7 @@ The variables described in the [defaults](defaults/main.yml) are used as default
 `plugins` is a list of dicts with the following keys:
 
 | Name      | Required/Default                      | Description                                                                                                                                                |
-|-----------|---------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| --------- | ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `name`    | :heavy_check_mark:                    | The name(slug) of the plugin to be installed                                                                                                               |
 | `merge`   | `{{ instance.plugin_merge_default }}` | Setting whether the options should be merged or overwritten                                                                                                |
 | `options` | :heavy_check_mark:                    | Dict containing the plugin options (the key is the same key as in the WordPress database)                                                                  |
@@ -89,7 +92,7 @@ If no `password` is set, a random password will be set, which can be reset via t
 Alternatively, plugins that supply the password like [authorizer](https://github.com/uhm-coe/authorizer) may be used.
 
 | Name       | Required/Default         | Description                           |
-|------------|--------------------------|---------------------------------------|
+| ---------- | ------------------------ | ------------------------------------- |
 | `email`    | :heavy_check_mark:       | The email address of the admin.       |
 | `name`     | :heavy_check_mark:       | The display name of the admin.        |
 | `password` | :heavy_multiplication_x: | The plain text password of the admin. |
