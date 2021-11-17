@@ -10,7 +10,8 @@ This role requires the [php-fpm role](https://github.com/stuvusIT/php-fpm), the 
 
 ## Role Variables
 
-The role has one top-level variable `wordpress_instances`, which is a list of dicts:
+The role has one main top-level variable `wordpress_instances`, which is a list of dicts.
+Additionally there are some global defaults (see `defaults/main.yaml`).
 
 ### General
 
@@ -41,15 +42,16 @@ The variables described in the [defaults](defaults/main.yml) are used as default
 
 ### Database connection
 
-| Name                | Required/Default                        | Description                                          |
-| ------------------- | --------------------------------------- | ---------------------------------------------------- |
-| `mysql_host`        | `localhost:/var/run/mysqld/mysqld.sock` |
-| `mysql_user`        | `{{instance.name}}`                     | The MySQL user to use for this instance              |
-| `mysql_create_user` | `True`                                  | Whether to create the MySQL user if it doesn't exist |
-| `mysql_db`          | `{{instance.name}}`                     | The database to create and use for this instance     |
-| `mysql_create_db`   | `True`                                  | Whether to create the database if it doesn't exist   |
-| `mysql_password`    | :heavy_check_mark:                      | The password for the MySQL user                      |
-| `table_prefix`      | `wp_`                                   | The database to create and use for this instance     |
+| Name                | Required/Default                          | Description                                                                                     |
+| ------------------- | ----------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `mysql_host`        | `localhost`                               |
+| `mysql_user`        | `{{instance.name}}`                       | The MySQL user to use for this instance                                                         |
+| `mysql_create_user` | `True`                                    | Whether to create the MySQL user if it doesn't exist                                            |
+| `mysql_db`          | `{{instance.name}}`                       | The database to create and use for this instance                                                |
+| `mysql_create_db`   | `True`                                    | Whether to create the database if it doesn't exist                                              |
+| `mysql_password`    | :heavy_check_mark:                        | The password for the MySQL user                                                                 |
+| `mysql_unix_socket` | `{{wordpress_default_mysql_unix_socket}}` | The unix socket to use for connecting to the database. Set to `null` for using tcp connections. |
+| `table_prefix`      | `wp_`                                     | The database to create and use for this instance                                                |
 
 ### Mail
 

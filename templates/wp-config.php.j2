@@ -6,7 +6,7 @@
 define('DB_NAME', '{{ wordpress_mysql_db }}');
 define('DB_USER', '{{ wordpress_mysql_user }}');
 define('DB_PASSWORD', '{{ wordpress_mysql_password }}');
-define('DB_HOST', '{{ wordpress_mysql_host }}');
+define('DB_HOST', '{{ wordpress_mysql_host }}{% if wordpress_mysql_unix_socket %}:{{ wordpress_mysql_unix_socket }}{% endif %}');
 define('DB_CHARSET', 'utf8');
 define('DB_COLLATE', '');
 
