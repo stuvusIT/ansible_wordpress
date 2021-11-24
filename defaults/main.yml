@@ -1,6 +1,8 @@
 ---
 wordpress_instances: []
 
+wordpress_default_mysql_unix_socket: '/var/run/mysqld/mysqld.sock'
+
 wordpress_default_table_prefix: "wp_"
 wordpress_default_import_wp_content: False
 wordpress_default_import_template: False

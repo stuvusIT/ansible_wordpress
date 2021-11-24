@@ -17,6 +17,7 @@
   shell: >
     mysql
     --host={{ wordpress_mysql_host }}
+    {% if wordpress_mysql_unix_socket %} --socket={{ wordpress_mysql_unix_socket }}{% endif %}
     --user={{ wordpress_mysql_user }}
     --password={{ wordpress_mysql_password }}
     --database={{ wordpress_mysql_db }} -e "show tables;"
@@ -57,6 +58,7 @@
       login_host: "{{ wordpress_mysql_host }}"
       login_user: "{{ wordpress_mysql_user }}"
       login_password: "{{ wordpress_mysql_password }}"
+      login_unix_socket: "{{ wordpress_mysql_unix_socket }}"
       name: "{{ wordpress_mysql_db }}"
       target: "{{ wp_sql_file.path }}"
 
@@ -66,6 +68,3 @@
       state: absent
 
   when: wp_tables.stdout == ""
-
-
-

@@ -1,6 +1,7 @@
 ---
 - set_fact:
-    wordpress_mysql_host: "{{ wp_instance.mysql_host | default('localhost:/var/run/mysqld/mysqld.sock') }}"
+    wordpress_mysql_host: "{{ wp_instance.mysql_host | default('localhost') }}"
+    wordpress_mysql_unix_socket: "{{ wp_instance.mysql_unix_socket | default(wordpress_default_mysql_unix_socket) }}"
     wordpress_mysql_user: "{{ wp_instance.mysql_user | default(wp_instance.name | mandatory) }}"
     wordpress_mysql_db: "{{ wp_instance.mysql_db | default(wp_instance.name | mandatory) }}"
     wordpress_mysql_password: "{{ wp_instance.mysql_password | mandatory }}"
