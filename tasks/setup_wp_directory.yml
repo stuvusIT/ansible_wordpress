@@ -1,12 +1,4 @@
 ---
-- name: Download latest WordPress version to localhost
-  get_url:
-    url: https://wordpress.org/latest.tar.gz
-    dest: "{{ global_cache_dir | mandatory }}/wordpress_latest.tar.gz"
-  become: False
-  delegate_to: localhost
-  run_once: True
-
 - name: Create WordPress directory {{ wordpress_instance_path }}
   file:
     path: "{{ wordpress_instance_path }}"

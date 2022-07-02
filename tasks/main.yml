@@ -7,6 +7,13 @@
       name: ''
       host: localhost
       state: absent
+  - name: Download latest WordPress version to localhost
+    get_url:
+      url: https://wordpress.org/latest.tar.gz
+      dest: "{{ global_cache_dir | mandatory }}/wordpress_latest.tar.gz"
+    become: False
+    delegate_to: localhost
+    run_once: True
   when: wordpress_instances | length > 0
 
 - include_tasks: setup_wp_instance.yml
