@@ -40,18 +40,31 @@ The variables described in the [defaults](defaults/main.yml) are used as default
 | `plugins`              | `[]`                    | List of plugins to install and options to set. For more information see [Plugins](#plugins)                                           |
 | `plugin_merge_default` | `True`                  | Default decision whether the existing plugin options should be merged or overwritten by the ones defined in the role variables.       |
 
-### Database connection
+### Database Connection
 
-| Name                | Required/Default                          | Description                                                                                     |
-| ------------------- | ----------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| `mysql_host`        | `localhost`                               |
-| `mysql_user`        | `{{instance.name}}`                       | The MySQL user to use for this instance                                                         |
-| `mysql_create_user` | `True`                                    | Whether to create the MySQL user if it doesn't exist                                            |
-| `mysql_db`          | `{{instance.name}}`                       | The database to create and use for this instance                                                |
-| `mysql_create_db`   | `True`                                    | Whether to create the database if it doesn't exist                                              |
-| `mysql_password`    | :heavy_check_mark:                        | The password for the MySQL user                                                                 |
-| `mysql_unix_socket` | `{{wordpress_default_mysql_unix_socket}}` | The unix socket to use for connecting to the database. Set to `null` for using tcp connections. |
-| `table_prefix`      | `wp_`                                     | The database to create and use for this instance                                                |
+| Name                | Required/Default                          | Description                                                                                                             |
+| ------------------- | ----------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `mysql_host`        | `localhost`                               | The host to use for connecting to the database. Set to `localhost:/path/to/mysqld/socket` to use a Unix socket instead. |
+| `mysql_user`        | `{{instance.name}}`                       | The MySQL user to use for this instance                                                                                 |
+| `mysql_create_user` | `True`                                    | Whether to create the MySQL user if it doesn't exist                                                                    |
+| `mysql_db`          | `{{instance.name}}`                       | The database to create and use for this instance                                                                        |
+| `mysql_create_db`   | `True`                                    | Whether to create the database if it doesn't exist                                                                      |
+| `mysql_password`    | :heavy_check_mark:                        | The password for the MySQL user                                                                                         |
+| `table_prefix`      | `wp_`                                     | The database to create and use for this instance                                                                        |
+
+#### Environment Variables for Database Connection
+
+`wp-config.php` will not contain any MySQL credentials and instead read them from the environment variables `ANSIBLE_WORDPRESS_DB_HOST`, `ANSIBLE_WORDPRESS_DB_NAME`, `ANSIBLE_WORDPRESS_DB_USER`, and `ANSIBLE_WORDPRESS_DB_PASSWORD`.
+This role is not responsible to actually set these environment variables (except in the context of tasks performed by this role), so you need to add them to the PHP config yourself.
+In order to be compatible with this role's defaults, you should set the environment variables as follows:
+
+```ini
+env[ANSIBLE_WORDPRESS_DB_HOST] = {{ wp_instance.mysql_host | default('localhost:/var/run/mysqld/mysqld.sock') }}
+env[ANSIBLE_WORDPRESS_DB_NAME] = {{ wp_instance.mysql_db | default(wp_instance.name | mandatory) }}
+env[ANSIBLE_WORDPRESS_DB_USER] = {{ wp_instance.mysql_user | default(wp_instance.name | mandatory) }}
+env[ANSIBLE_WORDPRESS_DB_PASSWORD] = {{ wp_instance.mysql_password | mandatory }}
+```
+
 
 ### Mail
 

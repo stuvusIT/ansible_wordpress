@@ -1,7 +1,7 @@
 ---
 - set_fact:
-    wordpress_mysql_host: "{{ wp_instance.mysql_host | default('localhost') }}"
-    wordpress_mysql_unix_socket: "{{ wp_instance.mysql_unix_socket | default(wordpress_default_mysql_unix_socket) }}"
+    wordpress_mysql_stripped_host: "{{ wp_instance.mysql_host | default('localhost') }}"
+    wordpress_mysql_host: "{{ wp_instance.mysql_host | default('localhost:/var/run/mysqld/mysqld.sock') }}"
     wordpress_mysql_user: "{{ wp_instance.mysql_user | default(wp_instance.name | mandatory) }}"
     wordpress_mysql_db: "{{ wp_instance.mysql_db | default(wp_instance.name | mandatory) }}"
     wordpress_mysql_password: "{{ wp_instance.mysql_password | mandatory }}"
@@ -9,16 +9,27 @@
     wordpress_mysql_create_user: "{{ wp_instance.mysql_create_user | default(true) }}"
     wordpress_mysql_create_db: "{{ wp_instance.mysql_create_db | default(true) }}"
 
-- import_tasks: setup_wp_database.yml
+- set_fact:
+    wordpress_mysql_stripped_host: "localhost"
+    wordpress_mysql_unix_socket: "{{ wordpress_mysql_host[10:] }}"
+  when: wordpress_mysql_host.startswith('localhost:/')
 
-- import_tasks: setup_wp_directory.yml
+- environment:
+    ANSIBLE_WORDPRESS_DB_HOST: "{{ wordpress_mysql_host }}"
+    ANSIBLE_WORDPRESS_DB_NAME: "{{ wordpress_mysql_db }}"
+    ANSIBLE_WORDPRESS_DB_USER: "{{ wordpress_mysql_user }}"
+    ANSIBLE_WORDPRESS_DB_PASSWORD: "{{ wordpress_mysql_password }}"
+  block:
+  - import_tasks: setup_wp_database.yml
 
-# includes configure_plugin, which includes the configure_option files
-- import_tasks: setup_wp_plugins.yml
-- import_tasks: configure_wp_admins.yml
+  - import_tasks: setup_wp_directory.yml
 
-- name: Update wordpress instance '{{ wp_instance.name | mandatory }}'
-  become_user: www-data
-  shell: "wp core update --path={{ wordpress_instance_path }}"
-  register: result
-  changed_when: "not 'Success: WordPress is up to date' in result.stdout"
+  # includes configure_plugin, which includes the configure_option files
+  - import_tasks: setup_wp_plugins.yml
+  - import_tasks: configure_wp_admins.yml
+
+  - name: Update wordpress instance '{{ wp_instance.name | mandatory }}'
+    become_user: www-data
+    shell: "wp core update --path={{ wordpress_instance_path }}"
+    register: result
+    changed_when: "not 'Success: WordPress is up to date' in result.stdout"

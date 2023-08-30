@@ -16,8 +16,8 @@
 - name: Check if DB '{{ wp_instance.database_name | default(wp_instance.name) }}' contains any tables
   shell: >
     mysql
-    --host={{ wordpress_mysql_host }}
-    {% if wordpress_mysql_unix_socket %} --socket={{ wordpress_mysql_unix_socket }}{% endif %}
+    --host={{ wordpress_mysql_stripped_host }}
+    --socket={{ wordpress_mysql_unix_socket | default("") }}
     --user={{ wordpress_mysql_user }}
     --password={{ wordpress_mysql_password }}
     --database={{ wordpress_mysql_db }} -e "show tables;"
@@ -55,10 +55,10 @@
   - name: Import WordPress SQL file for instance '{{ wp_instance.name | mandatory }}'
     community.mysql.mysql_db:
       state: import
-      login_host: "{{ wordpress_mysql_host }}"
+      login_host: "{{ wordpress_mysql_stripped_host }}"
       login_user: "{{ wordpress_mysql_user }}"
       login_password: "{{ wordpress_mysql_password }}"
-      login_unix_socket: "{{ wordpress_mysql_unix_socket }}"
+      login_unix_socket: "{{ wordpress_mysql_unix_socket | default(null) }}"
       name: "{{ wordpress_mysql_db }}"
       target: "{{ wp_sql_file.path }}"
 
