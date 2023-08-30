@@ -3,10 +3,10 @@
 
 
 // MySQL settings
-define('DB_NAME', '{{ wordpress_mysql_db }}');
-define('DB_USER', '{{ wordpress_mysql_user }}');
-define('DB_PASSWORD', '{{ wordpress_mysql_password }}');
-define('DB_HOST', '{{ wordpress_mysql_host }}{% if wordpress_mysql_unix_socket %}:{{ wordpress_mysql_unix_socket }}{% endif %}');
+define('DB_NAME', getenv('ANSIBLE_WORDPRESS_DB_NAME'));
+define('DB_USER', getenv('ANSIBLE_WORDPRESS_DB_USER'));
+define('DB_PASSWORD', getenv('ANSIBLE_WORDPRESS_DB_PASSWORD'));
+define('DB_HOST', getenv('ANSIBLE_WORDPRESS_DB_HOST'));
 define('DB_CHARSET', 'utf8');
 define('DB_COLLATE', '');
 
