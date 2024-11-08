@@ -10,3 +10,4 @@
       - php-mbstring
       - php-curl
       - php-xml
+      - mariadb-client

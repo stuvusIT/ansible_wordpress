@@ -2,11 +2,6 @@
 - block:
   - import_tasks: install_packages.yml
   - import_tasks: install_wp_cli.yml
-  - name: Remove anonymous DB user account
-    mysql_user:
-      name: ''
-      host: localhost
-      state: absent
   - name: Download latest WordPress version to localhost
     get_url:
       url: https://wordpress.org/latest.tar.gz
