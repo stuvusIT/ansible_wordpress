@@ -10,12 +10,18 @@ This role requires the [php-fpm role](https://github.com/stuvusIT/php-fpm), the 
 
 ## Role Variables
 
-The role has one main top-level variable `wordpress_instances`, which is a list of dicts.
-Additionally there are some global defaults (see `defaults/main.yaml`).
+| Name                     | Required/Default | Description                                                                |
+| ------------------------ | ---------------- | -------------------------------------------------------------------------- |
+| `wordpress_instances`    | `[]`             | List of dicts, see [general](#general)                                     |
+| `wordpress_enable_setup` | `False`          | Needs to be set to `True` to actually enable setup of wordpress instances. |
+
+When `wordpress_enable_setup` is `False` (the default), then this role only installs the required packages and ignores the content of `wordpress_instances`.
+This is useful for the case where `/var/www` is a shared directory between multiple hosts (i.e., a replicated setup) and another host is responsible for the setup of wordpress instances.
 
 ### General
 
 Each entry in `wordpress_instances` describes one WordPress instance which will be available in `/var/www/wordpress-{{instance.name}}`.
+For the dicts in `wordpress_instances`, there are some global defaults (see `defaults/main.yml`).
 A temporary directory for each instance will be created at `/var/www/wordpress-{{instance.name}}/wp-content/tmp` and should be configured accordingly in php.
 A lot of configuration keys are available, only the most important ones are described here.
 The variables described in the [defaults](defaults/main.yml) are used as default if a WordPress instance does not contain the respective key (e.g. if the instance does not define `admins`, `wordpress_default_admins` is used).

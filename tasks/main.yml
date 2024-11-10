@@ -9,6 +9,8 @@
     become: False
     delegate_to: localhost
     run_once: True
+    when: wordpress_enable_setup
+    tags: [wordpress-setup]
   when: wordpress_instances | length > 0
 
 - include_tasks: setup_wp_instance.yml
@@ -16,5 +18,7 @@
   loop_control:
     loop_var: wp_instance
     label: "{{ wp_instance.name }}"
+  when: wordpress_enable_setup
+  tags: [wordpress-setup]
 
 # mandatory: name, home, siteurl, mysql_password, default_password, blogname, blogdescription
