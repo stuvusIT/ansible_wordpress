@@ -1,5 +1,6 @@
 ---
 wordpress_instances: []
+wordpress_enable_setup: False
 
 wordpress_default_table_prefix: "wp_"
 wordpress_default_import_wp_content: False
